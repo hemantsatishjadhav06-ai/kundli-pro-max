@@ -434,44 +434,90 @@ function vimDashas(moonLon,birth){
   return{balance:bal,balanceLord:lord,dashas:ds};
 }
 
-/* ===== North Indian diamond chart ===== */
+/* ===== North Indian diamond chart with INLINE DEGREES (Parashara format) =====
+   Each planet rendered as "Ma 18:23" — abbreviation + degrees:minutes inside the
+   sign it occupies. Retrograde planets are shown in rust color.
+   Larger SVG (300×300) and house centres tuned for readable text at 7-8px.
+   ============================================================================ */
 const HOUSE_CENTERS=[
-  {cx:100,cy:60,num:{x:100,y:42}},   {cx:55,cy:38,num:{x:35,y:28}},
-  {cx:32,cy:58,num:{x:18,y:48}},     {cx:60,cy:100,num:{x:42,y:100}},
-  {cx:32,cy:142,num:{x:18,y:155}},   {cx:55,cy:162,num:{x:35,y:175}},
-  {cx:100,cy:140,num:{x:100,y:165}}, {cx:145,cy:162,num:{x:165,y:175}},
-  {cx:168,cy:142,num:{x:182,y:155}}, {cx:140,cy:100,num:{x:158,y:100}},
-  {cx:168,cy:58,num:{x:182,y:48}},   {cx:145,cy:38,num:{x:165,y:28}}
+  // viewBox: 300×300
+  {cx:150,cy:88,num:{x:150,y:62}},   // 1 top
+  {cx:80,cy:55,num:{x:50,y:38}},     // 2 top-left small
+  {cx:50,cy:85,num:{x:25,y:70}},     // 3 left-top corner
+  {cx:88,cy:150,num:{x:62,y:150}},   // 4 left center
+  {cx:50,cy:215,num:{x:25,y:230}},   // 5 left-bottom corner
+  {cx:80,cy:245,num:{x:50,y:262}},   // 6 bottom-left small
+  {cx:150,cy:212,num:{x:150,y:238}}, // 7 bottom
+  {cx:220,cy:245,num:{x:250,y:262}}, // 8 bottom-right small
+  {cx:250,cy:215,num:{x:275,y:230}}, // 9 right-bottom corner
+  {cx:212,cy:150,num:{x:238,y:150}}, // 10 right center
+  {cx:250,cy:85,num:{x:275,y:70}},   // 11 right-top corner
+  {cx:220,cy:55,num:{x:250,y:38}}    // 12 top-right small
 ];
-function drawChart(positions,ascLon,color='#7a1f1f'){
-  const ascR=rashiOf(ascLon);
-  const houses=Array.from({length:12},()=>[]);
-  for(const p of P_ORDER){
-    const lon=positions[p]?.lon??positions[p]?.fullDeg;
-    if(lon===undefined) continue;
-    const r=rashiOf(lon);
-    houses[(r-ascR+12)%12].push({n:PLANETS_ABBR[p],r:positions[p]?.retro});
-  }
+
+function _planetCell(positions, p){
+  const lon = positions[p]?.lon ?? positions[p]?.fullDeg;
+  if(lon === undefined) return null;
+  const inSign = degInR(lon);
+  const d = Math.floor(inSign);
+  const m = Math.floor((inSign - d) * 60);
+  return {
+    n: PLANETS_ABBR[p],
+    d: `${String(d).padStart(2,'0')}:${String(m).padStart(2,'0')}`,
+    r: positions[p]?.retro,
+    rashi: rashiOf(lon)
+  };
+}
+
+function _drawDiamondSvg(houses, ascR, color){
   let labels='';
   for(let i=0;i<12;i++){
-    const c=HOUSE_CENTERS[i],sn=(ascR+i)%12+1;
-    labels+=`<text x="${c.num.x}" y="${c.num.y}" font-size="8" font-weight="700" fill="${color}" text-anchor="middle">${sn}</text>`;
-    const cols=houses[i].length>3?2:1;
-    const rows=Math.ceil(houses[i].length/cols);
-    houses[i].forEach((p,idx)=>{
-      const ro=Math.floor(idx/cols),co=idx%cols;
-      const x=c.cx+(co-(cols-1)/2)*15,y=c.cy+(ro-(rows-1)/2)*9+3;
-      const fill=p.r?'#b04a2f':'#2c2418';
-      labels+=`<text x="${x}" y="${y}" font-size="8" font-weight="600" fill="${fill}" text-anchor="middle">${p.n}</text>`;
+    const c=HOUSE_CENTERS[i], sn=(ascR+i)%12+1;
+    // Sign number (small, corner)
+    labels += `<text x="${c.num.x}" y="${c.num.y}" font-size="9" font-weight="700" fill="${color}" text-anchor="middle" font-family="Inter,sans-serif">${sn}</text>`;
+    if(!houses[i].length) continue;
+    // Stack planets vertically; if more than 3, use 2 columns
+    const cols = houses[i].length > 3 ? 2 : 1;
+    const rows = Math.ceil(houses[i].length / cols);
+    const lineH = 8;
+    houses[i].forEach((pl, idx) => {
+      const ro = Math.floor(idx/cols), co = idx%cols;
+      const yOffset = (ro - (rows-1)/2) * lineH;
+      const xOffset = cols === 1 ? 0 : (co - (cols-1)/2) * 28;
+      const y = c.cy + yOffset + 2;
+      const x = c.cx + xOffset;
+      const fill = pl.r ? '#b04a2f' : '#2c2418';
+      // Format: "Ma 18:23" or "Sa 10:35(R)" — readable at small size
+      const txt = `${pl.n} ${pl.d}${pl.r ? '(R)' : ''}`;
+      labels += `<text x="${x}" y="${y}" font-size="7.5" font-weight="600" fill="${fill}" text-anchor="middle" font-family="Inter,sans-serif" font-style="${pl.r?'italic':'normal'}">${txt}</text>`;
     });
   }
-  return `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-    <rect x="10" y="10" width="180" height="180" fill="#fdfaf2" stroke="${color}" stroke-width="1.5"/>
-    <line x1="10" y1="10" x2="190" y2="190" stroke="${color}" stroke-width="1"/>
-    <line x1="190" y1="10" x2="10" y2="190" stroke="${color}" stroke-width="1"/>
-    <polygon points="100,10 190,100 100,190 10,100" fill="none" stroke="${color}" stroke-width="1"/>
+  // 3 inner dashes — small parallel marker lines inside the central diamond
+  // (classical Parashari decorative element, also useful as a centre guide).
+  const innerDashes = `
+    <line x1="138" y1="146" x2="162" y2="146" stroke="${color}" stroke-width="0.8" stroke-dasharray="2,1.5" opacity="0.65"/>
+    <line x1="135" y1="150" x2="165" y2="150" stroke="${color}" stroke-width="0.8" stroke-dasharray="2,1.5" opacity="0.65"/>
+    <line x1="138" y1="154" x2="162" y2="154" stroke="${color}" stroke-width="0.8" stroke-dasharray="2,1.5" opacity="0.65"/>
+  `;
+  return `<svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+    <rect x="15" y="15" width="270" height="270" fill="#fdfaf2" stroke="${color}" stroke-width="2"/>
+    <line x1="15" y1="15" x2="285" y2="285" stroke="${color}" stroke-width="1.2"/>
+    <line x1="285" y1="15" x2="15" y2="285" stroke="${color}" stroke-width="1.2"/>
+    <polygon points="150,15 285,150 150,285 15,150" fill="none" stroke="${color}" stroke-width="1.5"/>
+    ${innerDashes}
     ${labels}
   </svg>`;
+}
+
+function drawChart(positions, ascLon, color='#7a1f1f'){
+  const ascR = rashiOf(ascLon);
+  const houses = Array.from({length:12}, ()=>[]);
+  for(const p of P_ORDER){
+    const cell = _planetCell(positions, p);
+    if(!cell) continue;
+    houses[(cell.rashi - ascR + 12) % 12].push(cell);
+  }
+  return _drawDiamondSvg(houses, ascR, color);
 }
 function navLagna(lon){
   const r=rashiOf(lon),inS=degInR(lon),idx=Math.floor(inS/(30/9));
@@ -700,37 +746,24 @@ function buildPdfPage(state){
   </div>`;
 }
 
-function drawBhavSvg(positions,cusps,color){
-  const ascR=rashiOf(cusps[0]);
-  const houses=Array.from({length:12},()=>[]);
+function drawBhavSvg(positions, cusps, color){
+  // Same renderer as drawChart, but planet→house comes from cusp ranges.
+  const ascR = rashiOf(cusps[0]);
+  const houses = Array.from({length:12}, ()=>[]);
   for(const p of P_ORDER){
-    const lon=positions[p]?.lon;
-    if(lon===undefined) continue;
+    const lon = positions[p]?.lon ?? positions[p]?.fullDeg;
+    if(lon === undefined) continue;
+    const cell = _planetCell(positions, p);
+    if(!cell) continue;
+    let placed = false;
     for(let i=0;i<12;i++){
-      const c1=cusps[i],c2=cusps[(i+1)%12];
-      const inH=c2>c1?(lon>=c1&&lon<c2):(lon>=c1||lon<c2);
-      if(inH){houses[i].push({n:PLANETS_ABBR[p],r:positions[p]?.retro});break;}
+      const c1 = cusps[i], c2 = cusps[(i+1)%12];
+      const inH = c2 > c1 ? (lon >= c1 && lon < c2) : (lon >= c1 || lon < c2);
+      if(inH){ houses[i].push(cell); placed = true; break; }
     }
+    if(!placed) houses[0].push(cell);
   }
-  let labels='';
-  for(let i=0;i<12;i++){
-    const c=HOUSE_CENTERS[i],sn=(ascR+i)%12+1;
-    labels+=`<text x="${c.num.x}" y="${c.num.y}" font-size="8" font-weight="700" fill="${color}" text-anchor="middle">${sn}</text>`;
-    const cols=houses[i].length>3?2:1;
-    const rows=Math.ceil(houses[i].length/cols);
-    houses[i].forEach((p,idx)=>{
-      const ro=Math.floor(idx/cols),co=idx%cols;
-      const x=c.cx+(co-(cols-1)/2)*15,y=c.cy+(ro-(rows-1)/2)*9+3;
-      labels+=`<text x="${x}" y="${y}" font-size="8" font-weight="600" fill="${p.r?'#b04a2f':'#2c2418'}" text-anchor="middle">${p.n}</text>`;
-    });
-  }
-  return `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-    <rect x="10" y="10" width="180" height="180" fill="#fdfaf2" stroke="${color}" stroke-width="1.5"/>
-    <line x1="10" y1="10" x2="190" y2="190" stroke="${color}" stroke-width="1"/>
-    <line x1="190" y1="10" x2="10" y2="190" stroke="${color}" stroke-width="1"/>
-    <polygon points="100,10 190,100 100,190 10,100" fill="none" stroke="${color}" stroke-width="1"/>
-    ${labels}
-  </svg>`;
+  return _drawDiamondSvg(houses, ascR, color);
 }
 
 function generate(){
