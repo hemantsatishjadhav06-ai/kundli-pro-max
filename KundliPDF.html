@@ -109,75 +109,94 @@ input:focus, select:focus{
   padding:10px 14px; font-size:12px; color:var(--ink-soft);
 }
 
-/* ============ PDF PAGE ============ */
+/* ============ PDF PAGE — A4 LANDSCAPE ============ */
 .pdf-page{
-  width:210mm; min-height:297mm; margin:14px auto;
-  background:#fff; padding:12mm 14mm;
+  width:297mm; min-height:210mm; margin:14px auto;
+  background:#fff; padding:8mm 10mm;
   box-shadow:0 4px 24px rgba(0,0,0,0.12);
-  font-size:9.5px; line-height:1.35;
+  font-size:9px; line-height:1.3;
   page-break-after:always;
 }
 .pdf-page .ph-header{
   display:flex; justify-content:space-between; align-items:center;
-  border-bottom:2px double var(--maroon); padding-bottom:8px; margin-bottom:8px;
+  border-bottom:2px double var(--maroon); padding-bottom:5px; margin-bottom:6px;
 }
 .pdf-page .ph-header h1{
-  font-family:'Cormorant Garamond',serif; font-size:22px;
+  font-family:'Cormorant Garamond',serif; font-size:18px;
   color:var(--maroon); font-weight:700;
 }
-.pdf-page .ph-header .om{font-size:24px; color:var(--maroon);}
-.pdf-page .ph-header .meta{font-size:9px; color:var(--ink-soft); text-align:right;}
+.pdf-page .ph-header .om{font-size:22px; color:var(--maroon);}
+.pdf-page .ph-header .meta{font-size:8px; color:var(--ink-soft); text-align:right;}
 
 .id-strip{
-  display:grid; grid-template-columns:repeat(6,1fr);
-  gap:6px; margin-bottom:10px; font-size:8.5px;
-  background:var(--paper2); padding:6px 10px; border-radius:4px;
+  display:grid; grid-template-columns:repeat(7,1fr);
+  gap:5px; margin-bottom:7px; font-size:8px;
+  background:var(--paper2); padding:5px 8px; border-radius:4px;
 }
 .id-strip .field{display:flex; flex-direction:column;}
-.id-strip .field span:first-child{color:var(--maroon); font-weight:700; font-size:7.5px; text-transform:uppercase; letter-spacing:0.5px;}
-.id-strip .field span:last-child{font-weight:600; color:var(--ink);}
+.id-strip .field span:first-child{color:var(--maroon); font-weight:700; font-size:7px; text-transform:uppercase; letter-spacing:0.5px;}
+.id-strip .field span:last-child{font-weight:600; color:var(--ink); font-size:9px;}
 
-/* Parashara 6-cell layout: 3 rows × 2 cols */
+/* Landscape layout: 5 charts in a horizontal row */
 .pdf-charts{
   display:grid;
-  grid-template-columns:repeat(2,1fr);
-  grid-template-rows:repeat(3,auto);
-  gap:8px; margin-bottom:10px;
+  grid-template-columns:repeat(5,1fr);
+  gap:5px; margin-bottom:7px;
 }
 .pdf-chart{
-  border:1px solid var(--maroon); border-radius:4px; padding:6px 8px;
+  border:1px solid var(--maroon); border-radius:4px; padding:4px 5px;
   background:#fdfaf2;
 }
 .pdf-chart .label{
-  font-family:'Cormorant Garamond',serif; font-size:12px;
+  font-family:'Cormorant Garamond',serif; font-size:10px;
   font-weight:700; color:var(--maroon);
-  border-bottom:1px solid var(--gold); padding-bottom:3px;
-  margin-bottom:5px; letter-spacing:0.3px;
+  border-bottom:1px solid var(--gold); padding-bottom:2px;
+  margin-bottom:3px; letter-spacing:0.2px;
   display:flex; justify-content:space-between; align-items:center;
 }
+.pdf-chart .label .main{font-size:10px;}
 .pdf-chart .label .tag{
-  font-size:9px; background:var(--maroon); color:#fff;
-  padding:1px 6px; border-radius:8px; font-weight:600;
-  letter-spacing:0.4px;
+  font-size:7.5px; background:var(--maroon); color:#fff;
+  padding:1px 5px; border-radius:6px; font-weight:600;
+  letter-spacing:0.3px;
 }
-.pdf-chart svg{width:100%; height:auto; display:block; max-width:260px; margin:0 auto;}
-.dasha-cell{
-  border:1px solid var(--maroon); border-radius:4px; padding:6px 8px;
-  background:#fdfaf2; font-size:8.5px;
+.pdf-chart svg{width:100%; height:auto; display:block;}
+
+/* 3-level Vimshottari dasha — Maha | Antar | Pratyantar columns */
+.dasha-3lvl{
+  display:grid; grid-template-columns:1fr 1fr 1.2fr;
+  gap:5px; margin-bottom:6px;
 }
-.dasha-cell h4{
-  font-family:'Cormorant Garamond',serif; font-size:12px;
+.dasha-col{
+  border:1px solid var(--maroon); border-radius:4px;
+  padding:4px 5px; background:#fdfaf2;
+}
+.dasha-col h4{
+  font-family:'Cormorant Garamond',serif; font-size:10px;
   color:var(--maroon); border-bottom:1px solid var(--gold);
-  padding-bottom:3px; margin-bottom:4px; letter-spacing:0.3px;
+  padding-bottom:2px; margin-bottom:3px; letter-spacing:0.2px;
   display:flex; justify-content:space-between;
 }
-.dasha-cell .tag{font-size:9px; background:var(--maroon); color:#fff; padding:1px 6px; border-radius:8px; font-weight:600;}
-.dasha-cell .dasha-row{
-  display:flex; justify-content:space-between;
-  padding:1.5px 0; border-bottom:1px dotted var(--line-soft);
-  font-size:8px;
+.dasha-col h4 .tag{
+  font-size:7px; background:var(--maroon); color:#fff;
+  padding:1px 5px; border-radius:6px; font-weight:600;
 }
-.dasha-cell .dasha-row span:first-child{font-weight:600;}
+.dasha-col h4 .tag.lvl2{background:var(--navy);}
+.dasha-col h4 .tag.lvl3{background:var(--sage);}
+.dasha-col .d-row{
+  display:flex; justify-content:space-between;
+  padding:1px 0; font-size:7.5px;
+  border-bottom:1px dotted var(--line-soft);
+}
+.dasha-col .d-row.current{
+  background:rgba(184,134,11,0.18); font-weight:700;
+  padding:1.5px 4px; margin:0 -2px; border-radius:2px;
+  border-bottom:1px solid var(--gold);
+}
+.dasha-col .d-row .name{font-weight:600;}
+.dasha-col .d-row .dates{
+  font-family:'SF Mono',monospace; font-size:7px; color:var(--ink-soft);
+}
 
 /* Tables */
 .pdf-page table{
@@ -229,15 +248,15 @@ input:focus, select:focus{
   display:flex; justify-content:space-between;
 }
 
-/* Print */
+/* Print — A4 LANDSCAPE */
 @media print{
   body{background:#fff; padding:0;}
   .shell{display:none;}
   .pdf-page{
-    margin:0; box-shadow:none; padding:10mm 12mm;
-    width:auto; min-height:auto;
+    margin:0; box-shadow:none; padding:6mm 8mm;
+    width:auto; min-height:auto; font-size:8.5px;
   }
-  @page{size:A4; margin:0;}
+  @page{size:A4 landscape; margin:0;}
 }
 </style>
 </head>
@@ -415,23 +434,60 @@ function sripatiCusps(JD,lat,lon){
   return c;
 }
 function vimDashas(moonLon,birth){
+  // Full 3-level Vimshottari: Mahadasha → Antardasha → Pratyantar Dasha
   const sp=360/27,ni=Math.floor(norm360(moonLon)/sp),pos=norm360(moonLon)-ni*sp;
   const lord=NAK_LORDS[ni%9],yrs=NAK_YRS[lord],el=(pos/sp)*yrs,bal=yrs-el;
   const ds=[]; let cur=new Date(birth.getTime()-el*365.25*86400*1000);
   const start=ORDER.indexOf(lord);
+  const DAY_MS = 86400 * 1000;
   for(let i=0;i<9;i++){
-    const L=ORDER[(start+i)%9],y=NAK_YRS[L],end=new Date(cur.getTime()+y*365.25*86400*1000);
+    const L=ORDER[(start+i)%9], y=NAK_YRS[L];
+    const end=new Date(cur.getTime() + y*365.25*DAY_MS);
     const ants=[]; let aCur=new Date(cur);
     for(let j=0;j<9;j++){
-      const A=ORDER[(ORDER.indexOf(L)+j)%9],ay=(y*NAK_YRS[A])/120;
-      const aEnd=new Date(aCur.getTime()+ay*365.25*86400*1000);
-      ants.push({lord:A,start:new Date(aCur),end:new Date(aEnd)});
-      aCur=aEnd;
+      const A=ORDER[(ORDER.indexOf(L)+j)%9];
+      const ay = (y * NAK_YRS[A]) / 120;
+      const aEnd = new Date(aCur.getTime() + ay*365.25*DAY_MS);
+      // 3rd level: Pratyantar Dashas inside each Antardasha
+      const prats = []; let pCur = new Date(aCur);
+      for(let k=0;k<9;k++){
+        const P = ORDER[(ORDER.indexOf(A)+k)%9];
+        const py = (ay * NAK_YRS[P]) / 120;
+        const pEnd = new Date(pCur.getTime() + py*365.25*DAY_MS);
+        prats.push({lord:P, start:new Date(pCur), end:new Date(pEnd)});
+        pCur = pEnd;
+      }
+      ants.push({lord:A, start:new Date(aCur), end:new Date(aEnd), prats});
+      aCur = aEnd;
     }
-    ds.push({lord:L,start:new Date(cur),end:new Date(end),yrs:y,antars:ants});
-    cur=end;
+    ds.push({lord:L, start:new Date(cur), end:new Date(end), yrs:y, antars:ants});
+    cur = end;
   }
-  return{balance:bal,balanceLord:lord,dashas:ds};
+  return {balance:bal, balanceLord:lord, dashas:ds};
+}
+
+// Find current Maha + Antar + Pratyantar indices (the periods that contain `now`)
+function currentDasha(dashas){
+  const now = new Date();
+  for(let i=0;i<dashas.length;i++){
+    const md = dashas[i];
+    if(now >= md.start && now < md.end){
+      for(let j=0;j<md.antars.length;j++){
+        const ad = md.antars[j];
+        if(now >= ad.start && now < ad.end){
+          for(let k=0;k<ad.prats.length;k++){
+            const pd = ad.prats[k];
+            if(now >= pd.start && now < pd.end){
+              return {mahaIdx:i, antarIdx:j, pratIdx:k};
+            }
+          }
+          return {mahaIdx:i, antarIdx:j, pratIdx:0};
+        }
+      }
+      return {mahaIdx:i, antarIdx:0, pratIdx:0};
+    }
+  }
+  return {mahaIdx:0, antarIdx:0, pratIdx:0};
 }
 
 /* ===== North Indian diamond chart with INLINE DEGREES (Parashara format) =====
@@ -656,33 +712,42 @@ function buildPdfPage(state){
   const ascKP = norm360(state.ascSayana - kpAyan);
   const kpSvg = drawChart(kpPlanets, ascKP, '#4a6741');
 
-  // 6. Vimshottari Dasha — compact current+upcoming list (like the right column in the screenshot)
-  // Build flat list of currently-active and next dashas with dates
-  const today = new Date();
-  let dashaCellRows = '';
-  let count = 0;
-  // Find current Mahadasha
-  for(const md of state.dasha.dashas){
-    if(count >= 10) break;
-    for(const ad of md.antars){
-      if(count >= 10) break;
-      if(ad.end < today) continue;
-      const weekday = ['रवि','सोम','मंगल','बुध','गुरू','शुक्र','शनि'][ad.start.getDay()] + 'वार';
-      dashaCellRows += `<div class="dasha-row"><span class="devanagari">${md.lord}-${ad.lord}</span><span><span class="devanagari">${weekday}</span> <span class="mono">${fmtD(ad.start)}</span></span></div>`;
-      count++;
-    }
-  }
+  // ===== Vimshottari 3-level: Maha | Antar | Pratyantar =====
+  const cur = currentDasha(state.dasha.dashas);
+  const curMaha = state.dasha.dashas[cur.mahaIdx];
+  const curAntar = curMaha.antars[cur.antarIdx];
+
+  // Column 1 — All 9 Mahadashas
+  let mahaRows = '';
+  state.dasha.dashas.forEach((md, i) => {
+    const isCur = i === cur.mahaIdx;
+    mahaRows += `<div class="d-row${isCur?' current':''}"><span class="name devanagari">${md.lord} (${md.yrs}y)</span><span class="dates">${fmtD(md.start)} → ${fmtD(md.end)}</span></div>`;
+  });
+
+  // Column 2 — 9 Antardashas inside the current Mahadasha
+  let antarRows = '';
+  curMaha.antars.forEach((ad, j) => {
+    const isCur = j === cur.antarIdx;
+    antarRows += `<div class="d-row${isCur?' current':''}"><span class="name devanagari">${curMaha.lord}-${ad.lord}</span><span class="dates">${fmtD(ad.start)} → ${fmtD(ad.end)}</span></div>`;
+  });
+
+  // Column 3 — 9 Pratyantar Dashas inside the current Antardasha
+  let pratRows = '';
+  curAntar.prats.forEach((pd, k) => {
+    const isCur = k === cur.pratIdx;
+    pratRows += `<div class="d-row${isCur?' current':''}"><span class="name devanagari">${curMaha.lord}-${curAntar.lord}-${pd.lord}</span><span class="dates">${fmtD(pd.start)} → ${fmtD(pd.end)}</span></div>`;
+  });
 
   return `<div class="pdf-page" id="pdfPage">
     <div class="ph-header">
       <div>
         <h1>श्री गणेशाय नमः · Kundli of ${state.name}</h1>
-        <div style="font-size:9px;color:#5a4a32;font-style:italic;">Classical Parashari Birth Chart · Lahiri Sidereal · Topocentric</div>
+        <div style="font-size:8.5px;color:#5a4a32;font-style:italic;">Classical Parashari Birth Chart · Lahiri Sidereal · Topocentric · A4 Landscape</div>
       </div>
       <div class="om">🕉</div>
       <div class="meta">
         Generated ${new Date().toLocaleDateString()}<br>
-        Ayanamsa ${dms(state.ayan)}
+        Ayanamsa ${dms(state.ayan)} · JD ${state.JD.toFixed(2)}
       </div>
     </div>
     <div class="id-strip">
@@ -692,56 +757,70 @@ function buildPdfPage(state){
       <div class="field"><span>Time of Birth</span><span>${timeStr}</span></div>
       <div class="field"><span>Place</span><span>${state.lat.toFixed(2)}°N, ${state.lon.toFixed(2)}°E</span></div>
       <div class="field"><span>Time Zone</span><span>UTC+${state.tz}</span></div>
+      <div class="field"><span>Birth Dasha</span><span class="devanagari">${state.dasha.balanceLord} · ${state.dasha.balance.toFixed(2)}y</span></div>
     </div>
 
-    <!-- 5 Charts + Vimshottari in 3×2 Parashara layout -->
+    <!-- 5 Charts side-by-side -->
     <div class="pdf-charts">
       <div class="pdf-chart">
-        <div class="label"><span>जन्म कुंडली · Janma (D-1 Rasi)</span><span class="tag">LAGNA</span></div>
+        <div class="label"><span class="main">जन्म कुंडली · Janma</span><span class="tag">D-1</span></div>
         ${lagSvg}
       </div>
       <div class="pdf-chart">
-        <div class="label"><span>भाव (श्रीपति) · Bhav Sripati</span><span class="tag" style="background:#1e3a5f;">SRIPATI</span></div>
+        <div class="label"><span class="main">भाव श्रीपति · Sripati</span><span class="tag" style="background:#1e3a5f;">BHAV</span></div>
         ${bhavSripatiSvg}
       </div>
       <div class="pdf-chart">
-        <div class="label"><span>वर्ग नवांश (जीवनसाथी) · D-9 Navansh</span><span class="tag" style="background:#b04a2f;">D-9</span></div>
+        <div class="label"><span class="main">वर्ग नवांश · Navansh</span><span class="tag" style="background:#b04a2f;">D-9</span></div>
         ${navSvg}
       </div>
       <div class="pdf-chart">
-        <div class="label"><span>भाव (समविभाजन) · Bhav Samavibhajan</span><span class="tag" style="background:#b8860b;">EQUAL</span></div>
+        <div class="label"><span class="main">भाव समविभाजन · Equal</span><span class="tag" style="background:#b8860b;">BHAV</span></div>
         ${bhavEqualSvg}
       </div>
       <div class="pdf-chart">
-        <div class="label"><span>कृष्णमूर्ति कुंडली · Krishnamurti</span><span class="tag" style="background:#4a6741;">KP</span></div>
+        <div class="label"><span class="main">कृष्णमूर्ति · KP</span><span class="tag" style="background:#4a6741;">KP</span></div>
         ${kpSvg}
-      </div>
-      <div class="dasha-cell">
-        <h4><span>विंशोत्तरी · Vimshottari</span><span class="tag">DASHA</span></h4>
-        ${dashaCellRows}
       </div>
     </div>
 
-    <div style="display:grid;grid-template-columns:2fr 1.3fr;gap:8px;">
+    <!-- 3-Level Vimshottari Dasha (Maha | Antar | Pratyantar) -->
+    <div class="dasha-3lvl">
+      <div class="dasha-col">
+        <h4><span>विंशोत्तरी · Mahadasha</span><span class="tag">LEVEL 1</span></h4>
+        ${mahaRows}
+      </div>
+      <div class="dasha-col">
+        <h4><span><span class="devanagari">${curMaha.lord}</span> · Antardasha</span><span class="tag lvl2">LEVEL 2</span></h4>
+        ${antarRows}
+      </div>
+      <div class="dasha-col">
+        <h4><span><span class="devanagari">${curMaha.lord}-${curAntar.lord}</span> · Pratyantar</span><span class="tag lvl3">LEVEL 3</span></h4>
+        ${pratRows}
+      </div>
+    </div>
+
+    <!-- Planet table + Bhav cusps side-by-side -->
+    <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:6px;">
       <div>
-        <h3>ग्रह स्पष्ट · Planetary Positions (Nirayana / Lahiri)</h3>
-        <table>
+        <h3 style="font-family:'Cormorant Garamond',serif;font-size:10px;color:#7a1f1f;border-bottom:1px solid #b8860b;padding-bottom:2px;margin-bottom:3px;">ग्रह स्पष्ट · Planetary Positions (Nirayana / Lahiri)</h3>
+        <table style="font-size:7.5px;">
           <thead><tr><th>Graha</th><th>Rashi</th><th>Degree</th><th>R/M</th><th>Nak-Pada</th><th>Rashi Lord</th><th>Nak. Lord</th></tr></thead>
           <tbody>${pRows}</tbody>
         </table>
       </div>
       <div>
-        <h3>भाव स्पष्ट · Bhava Cusps (Sripati)</h3>
-        <table>
+        <h3 style="font-family:'Cormorant Garamond',serif;font-size:10px;color:#7a1f1f;border-bottom:1px solid #b8860b;padding-bottom:2px;margin-bottom:3px;">भाव स्पष्ट · Bhava Cusps (Sripati)</h3>
+        <table style="font-size:7.5px;">
           <thead><tr><th>Bhav</th><th>Rashi</th><th>Degree</th><th>Nak-Pada</th><th>Lord</th></tr></thead>
           <tbody>${bRows}</tbody>
         </table>
       </div>
     </div>
 
-    <div class="pdf-footer">
-      <span>🕉 Kundli Pro Max · Parashara One-Page Layout</span>
-      <span>Birth Mahadasha: <b class="devanagari">${state.dasha.balanceLord}</b> · Balance ${state.dasha.balance.toFixed(2)} वर्ष · JD ${state.JD.toFixed(2)}</span>
+    <div style="margin-top:4px;padding-top:3px;border-top:1px solid #d7c89b;font-size:7px;color:#5a4a32;display:flex;justify-content:space-between;">
+      <span>🕉 Kundli Pro Max · A4 Landscape · 3-Level Vimshottari · ${new Date().toLocaleString()}</span>
+      <span>Current: <b class="devanagari">${curMaha.lord}-${curAntar.lord}-${curAntar.prats[cur.pratIdx].lord}</b> (Maha-Antar-Pratyantar)</span>
     </div>
   </div>`;
 }
