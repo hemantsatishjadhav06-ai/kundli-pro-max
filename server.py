@@ -30,6 +30,8 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         parsed = urlparse(self.path)
         if parsed.path in ("/", ""):
             self.path = "/" + HTML_FILE
+        elif parsed.path in ("/pdf", "/pdf/"):
+            self.path = "/KundliPDF.html"
         elif parsed.path == "/api/health":
             return self._json({"ok": True, "upstream": UPSTREAM_BASE,
                                "places": os.path.exists("places_compact.json")})
