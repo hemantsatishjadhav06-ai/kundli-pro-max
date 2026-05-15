@@ -543,6 +543,11 @@ footer.foot .links a:hover { color: var(--maroon); text-decoration: underline; }
     <div class="section-sub">120-year cycle · Maha → Antar → Pratyantar (three-level breakdown)</div>
     <div id="dashaTable"></div>
 
+    <!-- ============ Verification ============ -->
+    <div class="section-title">✓ Verification · Accuracy Audit</div>
+    <div class="section-sub">Side-by-side: Local Engine (VSOP87/ELP) vs Live API (Swiss Ephemeris) — deltas in arc-minutes</div>
+    <div id="verifyPanel"></div>
+
     <!-- ============ Raw API ============ -->
     <div class="section-title">🧬 Raw API Diagnostic</div>
     <div class="section-sub">Endpoint-by-endpoint responses from json.freeastrologyapi.com</div>
@@ -1144,7 +1149,102 @@ function renderAll(){
   renderBhav();
   renderVargas();
   renderDasha();
+  renderVerify();
   renderRaw();
+}
+
+function renderVerify(){
+  const L = STATE.local;
+  const apiNir = getApiPlanets('nirayana');
+  const apiSay = getApiPlanets('sayana');
+  // Reference values from Parashara's Light screenshot (sidereal Lahiri, 5-May-2002 00:00 Delhi)
+  const REFERENCE = {
+    asc: { lon: 269.0469, label: 'Sag 29°02\'49"' },
+    sun: { lon: 20.2381,  label: 'Aries 20°14\'17"' },
+    moon:{ lon: 295.4525, label: 'Cap 25°27\'09"' },
+    mars:{ lon: 50.3517,  label: 'Taurus 20°21\'06"' },
+    mercury:{ lon:41.0350,label: 'Taurus 11°02\'06"' },
+    jupiter:{ lon:77.6494,label: 'Gemini 17°38\'58"' },
+    venus:{ lon:47.0933,  label: 'Taurus 17°05\'36"' },
+    saturn:{ lon:50.0603, label: 'Taurus 20°03\'37"' },
+    rahu:{ lon:54.2358,   label: 'Taurus 24°14\'09"' },
+    ketu:{ lon:234.2358,  label: 'Scorpio 24°14\'09"' },
+    uranus:{ lon:304.6975,label: 'Aqu 04°41\'51"' },
+    neptune:{ lon:287.0028,label:'Cap 17°00\'10"' },
+    pluto:{ lon:233.1403, label: 'Scorpio 23°08\'25"' }
+  };
+  const arcmin = (a, b) => {
+    let d = Math.abs(a - b);
+    if(d > 180) d = 360 - d;
+    return d * 60;
+  };
+  const verdict = m => m < 2 ? '✓' : m < 5 ? '◐' : m < 15 ? '⚠' : '✗';
+  const verdictCls = m => m < 2 ? 'asp-TRIN' : m < 5 ? 'asp-SEXT' : m < 15 ? 'asp-CONJ' : 'asp-OPPO';
+
+  let rows = '';
+  const keys = ['asc','sun','moon','mars','mercury','jupiter','venus','saturn','rahu','ketu','uranus','neptune','pluto'];
+  for(const k of keys){
+    const local = k==='asc' ? L.ascNirayana : L.nirayana[k]?.lon;
+    const api = k==='asc' ? apiNir?.asc?.fullDeg : apiNir?.[k]?.fullDeg;
+    const ref = REFERENCE[k];
+    const dLocAPI = api !== undefined && local !== undefined ? arcmin(local, api) : null;
+    const dLocRef = ref && local !== undefined ? arcmin(local, ref.lon) : null;
+    const dApiRef = ref && api !== undefined ? arcmin(api, ref.lon) : null;
+    const label = k==='asc' ? 'Lagna' : PLANETS_EN[k];
+    rows += `<tr>
+      <td><b>${label}</b> <small class="devanagari" style="color:var(--ink-soft);">${k==='asc'?'लग्न':PLANETS_HI[k]}</small></td>
+      <td class="mono">${local !== undefined ? dmsString(local) : '—'}</td>
+      <td class="mono">${api !== undefined ? dmsString(api) : '—'}</td>
+      <td class="mono">${ref ? ref.label : '—'}</td>
+      <td class="aspect-cell ${dLocAPI!==null?verdictCls(dLocAPI):''}">${dLocAPI!==null ? `${dLocAPI.toFixed(2)}' ${verdict(dLocAPI)}` : '—'}</td>
+      <td class="aspect-cell ${dLocRef!==null?verdictCls(dLocRef):''}">${dLocRef!==null ? `${dLocRef.toFixed(2)}' ${verdict(dLocRef)}` : '—'}</td>
+      <td class="aspect-cell ${dApiRef!==null?verdictCls(dApiRef):''}">${dApiRef!==null ? `${dApiRef.toFixed(2)}' ${verdict(dApiRef)}` : '—'}</td>
+    </tr>`;
+  }
+
+  // Bhav Madhya verification (Sripati cusps vs Parashara reference)
+  const BHAV_REF = [269.0469, 304.5956, 340.1439, 15.6925, 40.1439, 64.5956, 89.0469, 124.5956, 160.1439, 195.6925, 220.1439, 244.5956];
+  let bhavRows = '';
+  for(let i=0;i<12;i++){
+    const local = L.cuspsNirayana[i];
+    const ref = BHAV_REF[i];
+    const d = arcmin(local, ref);
+    const refR = rashiOf(ref); const refD = degInRashi(ref);
+    const refStr = `${RASHIS_EN[refR].substring(0,3)} ${dmsString(refD)}`;
+    bhavRows += `<tr>
+      <td class="center"><b>${i+1}</b></td>
+      <td class="mono">${dmsString(local)}</td>
+      <td class="mono">${refStr}</td>
+      <td class="aspect-cell ${verdictCls(d)}">${d.toFixed(2)}' ${verdict(d)}</td>
+    </tr>`;
+  }
+
+  document.getElementById('verifyPanel').innerHTML = `
+    <div class="note success">
+      <b>Three-way cross-check.</b> Reference = Parashara's Light 9.0 (NC Lahiri ayanamsa).
+      <span class="asp-TRIN" style="padding:2px 6px;">✓ &lt;2'</span> excellent ·
+      <span class="asp-SEXT" style="padding:2px 6px;">◐ 2-5'</span> good ·
+      <span class="asp-CONJ" style="padding:2px 6px;">⚠ 5-15'</span> minor drift ·
+      <span class="asp-OPPO" style="padding:2px 6px;">✗ >15'</span> divergent
+    </div>
+    <table>
+      <thead><tr>
+        <th>Body</th>
+        <th>Local Engine</th>
+        <th>Live API</th>
+        <th>Parashara Ref</th>
+        <th>Δ Local↔API</th>
+        <th>Δ Local↔Ref</th>
+        <th>Δ API↔Ref</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <h3 class="sub" style="margin-top:18px;">Sripati Bhav Madhya · Cusp Verification</h3>
+    <table>
+      <thead><tr><th>Bhav</th><th>Computed (Local)</th><th>Parashara Ref</th><th>Δ</th></tr></thead>
+      <tbody>${bhavRows}</tbody>
+    </table>
+  `;
 }
 
 function renderCharts(){
@@ -1157,45 +1257,44 @@ function renderCharts(){
   const ascS = apiSay?.asc?.fullDeg ?? L.ascSayana;
   const moonN = positions.moon?.fullDeg ?? positions.moon?.lon;
 
-  const lagSvg = getApiSvg('lagna_svg');
-  const navSvg = getApiSvg('navamsa_svg');
-
+  // Always use local North Indian diamond drawer for visual consistency.
+  // API SVGs come back in South Indian grid format and look mismatched.
   document.getElementById('chartsGrid').innerHTML = `
     <div class="chart-card">
-      <span class="chart-tag">NIRAYANA</span>
-      <div class="chart-title">लग्न कुंडली · Rasi (D-1)</div>
-      <div class="chart-sub">Lahiri Sidereal Lagna Chart</div>
-      ${lagSvg || drawNorthChart(positions, ascN)}
+      <span class="chart-tag">NIRAYANA · D-1</span>
+      <div class="chart-title">लग्न कुंडली · Rasi</div>
+      <div class="chart-sub">Lahiri Sidereal · North Indian style</div>
+      ${drawNorthChart(positions, ascN, 'maroon')}
     </div>
     <div class="chart-card">
-      <span class="chart-tag navamsa">D-9</span>
-      <div class="chart-title">नवमांश · Navamsa</div>
-      <div class="chart-sub">Marriage, Dharma & Inner Strength</div>
-      ${navSvg || drawNorthChart(navamsaPositions(positions), navamsaLagna(ascN))}
+      <span class="chart-tag navamsa">NAVAMSA · D-9</span>
+      <div class="chart-title">नवमांश</div>
+      <div class="chart-sub">Marriage · Dharma · Inner Strength</div>
+      ${drawNorthChart(navamsaPositions(positions), navamsaLagna(ascN), 'rust')}
     </div>
     <div class="chart-card">
       <span class="chart-tag sayana">SAYANA</span>
       <div class="chart-title">सायन · Tropical</div>
-      <div class="chart-sub">Western (Tropical) Chart</div>
-      ${drawNorthChart(sayPos, ascS)}
+      <div class="chart-sub">Western Zodiac · North Indian style</div>
+      ${drawNorthChart(sayPos, ascS, 'gold')}
     </div>
     <div class="chart-card">
       <span class="chart-tag kp">KP</span>
       <div class="chart-title">KP कुंडली · Krishnamurti</div>
-      <div class="chart-sub">Sub-lord based Sidereal</div>
-      ${drawNorthChart(L.kp, L.ascKP)}
+      <div class="chart-sub">Sub-lord Sidereal · KP Ayanamsa</div>
+      ${drawNorthChart(L.kp, L.ascKP, 'navy')}
     </div>
     <div class="chart-card">
-      <span class="chart-tag bhav">BHAV</span>
-      <div class="chart-title">भाव चलित · Bhav Chalit</div>
-      <div class="chart-sub">Placidus House Placement</div>
-      ${drawBhavChalit(L.nirayana, L.cuspsNirayana)}
+      <span class="chart-tag bhav">BHAV CHALIT</span>
+      <div class="chart-title">भाव चलित</div>
+      <div class="chart-sub">${L.bhavSystem === 'sripati' ? 'Sripati (Parashari)' : L.bhavSystem === 'placidus' ? 'Placidus' : 'Equal House'} cusps</div>
+      ${drawBhavChalit(L.nirayana, L.cuspsNirayana, 'sage')}
     </div>
     <div class="chart-card">
       <span class="chart-tag">CHANDRA</span>
-      <div class="chart-title">चन्द्र कुंडली · Moon Chart</div>
-      <div class="chart-sub">Janma Rashi as Lagna</div>
-      ${drawNorthChart(positions, moonN)}
+      <div class="chart-title">चन्द्र कुंडली</div>
+      <div class="chart-sub">Moon Chart · Janma Rashi as Lagna</div>
+      ${drawNorthChart(positions, moonN, 'maroon')}
     </div>
   `;
 }
@@ -1539,84 +1638,159 @@ function renderRaw(){
   document.getElementById('rawApi').innerHTML = html;
 }
 
-/* ============ Diamond Chart Drawing ============ */
-function drawNorthChart(positions, ascLon){
-  const ascR = rashiOf(ascLon);
-  const houses = Array.from({length:12},()=>[]);
-  for(const p of PLANET_ORDER){
-    const lon = positions[p]?.fullDeg ?? positions[p]?.lon;
-    if(lon===undefined) continue;
-    const r = rashiOf(lon);
-    const h = ((r-ascR+12)%12);
-    houses[h].push(PLANETS_HI[p].substring(0,3));
-  }
-  const signs = Array.from({length:12},(_,i)=>(ascR+i)%12+1);
-  const centers = [
-    {x:200,y:115,num:{x:200,y:75}},   {x:120,y:80,num:{x:80,y:55}},
-    {x:80,y:120,num:{x:40,y:100}},    {x:120,y:200,num:{x:80,y:200}},
-    {x:80,y:280,num:{x:40,y:300}},    {x:120,y:320,num:{x:80,y:345}},
-    {x:200,y:285,num:{x:200,y:325}},  {x:280,y:320,num:{x:320,y:345}},
-    {x:320,y:280,num:{x:360,y:300}},  {x:280,y:200,num:{x:320,y:200}},
-    {x:320,y:120,num:{x:360,y:100}},  {x:280,y:80,num:{x:320,y:55}}
-  ];
+/* ============ Authentic North Indian Diamond Chart ============
+   Layout (Lagna always at TOP triangle, houses go counter-clockwise):
+       12  ╲    1    ╱  2
+            ╲       ╱
+       11 ── × 10 × ── 3
+            ╱       ╲
+        9 ╱    7    ╲  4   (no, 4 is left)
+   Standard arrangement:
+     1: top  | 2: top-right small | 3: right-top corner
+     4: right | 5: right-bottom corner | 6: bottom-right small
+     7: bottom | 8: bottom-left small | 9: left-bottom corner
+    10: left | 11: left-top corner | 12: top-left small
+   But the COMMON Hindi convention has counter-clockwise from top:
+     1 top, 2 upper-left small, 3 left-top corner, 4 left,
+     5 left-bottom corner, 6 lower-left small, 7 bottom,
+     8 lower-right small, 9 right-bottom corner, 10 right,
+     11 right-top corner, 12 upper-right small
+   This is the standard Parashari North Indian Kundli.
+   ============================================================ */
+
+const PLANET_ABBR = {sun:'Su',moon:'Mo',mars:'Ma',mercury:'Me',jupiter:'Ju',venus:'Ve',saturn:'Sa',rahu:'Ra',ketu:'Ke',uranus:'Ur',neptune:'Ne',pluto:'Pl'};
+
+const CHART_COLORS = {
+  maroon: '#7a1f1f', navy: '#1e3a5f', gold: '#b8860b',
+  sage: '#4a6741', rust: '#b04a2f'
+};
+
+// Standard North-Indian diamond geometry (400x400)
+// Outer square + 2 diagonals + inner diamond (square rotated 45°)
+// House centers are placed at the centroid of each region:
+const HOUSE_CENTERS = [
+  // 1: top center (diamond pointing down)
+  {cx:200, cy:120,  num:{x:200, y:90}},
+  // 2: top-left small triangle (between top edge and inner diamond top-left)
+  {cx:110, cy:75,   num:{x:75,  y:60}},
+  // 3: left-top corner triangle
+  {cx:65,  cy:115,  num:{x:35,  y:95}},
+  // 4: left center (diamond pointing right)
+  {cx:120, cy:200,  num:{x:85,  y:200}},
+  // 5: left-bottom corner triangle
+  {cx:65,  cy:285,  num:{x:35,  y:310}},
+  // 6: bottom-left small triangle
+  {cx:110, cy:325,  num:{x:75,  y:345}},
+  // 7: bottom center
+  {cx:200, cy:280,  num:{x:200, y:325}},
+  // 8: bottom-right small triangle
+  {cx:290, cy:325,  num:{x:325, y:345}},
+  // 9: right-bottom corner
+  {cx:335, cy:285,  num:{x:365, y:310}},
+  // 10: right center
+  {cx:280, cy:200,  num:{x:315, y:200}},
+  // 11: right-top corner
+  {cx:335, cy:115,  num:{x:365, y:95}},
+  // 12: top-right small triangle
+  {cx:290, cy:75,   num:{x:325, y:60}}
+];
+
+function _renderHouses(houses, signNums, color, opts={}){
+  const C = CHART_COLORS[color] || CHART_COLORS.maroon;
   let labels = '';
   for(let i=0;i<12;i++){
-    const c = centers[i];
-    labels += `<text x="${c.num.x}" y="${c.num.y}" class="house-num" text-anchor="middle">${signs[i]}</text>`;
-    houses[i].forEach((pl,idx)=>{
-      labels += `<text x="${c.x}" y="${c.y+idx*12-(houses[i].length-1)*6}" class="planet-label" text-anchor="middle">${pl}</text>`;
+    const c = HOUSE_CENTERS[i];
+    // Sign number
+    labels += `<text x="${c.num.x}" y="${c.num.y}" font-size="13" font-weight="700" fill="${C}" text-anchor="middle" font-family="Inter, sans-serif">${signNums[i]}</text>`;
+    // Planets in this house
+    const plist = houses[i];
+    if(!plist || !plist.length) continue;
+    // Auto-wrap into rows if many planets
+    const cols = plist.length > 4 ? 3 : (plist.length > 2 ? 2 : 1);
+    const rows = Math.ceil(plist.length / cols);
+    const colW = 22, rowH = 14;
+    plist.forEach((p, idx) => {
+      const r = Math.floor(idx / cols);
+      const col = idx % cols;
+      const x = c.cx + (col - (cols-1)/2) * colW;
+      const y = c.cy + (r - (rows-1)/2) * rowH + 4;
+      const fill = p.retro ? '#b04a2f' : '#2c2418';
+      const fontStyle = p.retro ? 'italic' : 'normal';
+      labels += `<text x="${x}" y="${y}" font-size="13" font-weight="700" fill="${fill}" font-style="${fontStyle}" text-anchor="middle" font-family="Inter, sans-serif">${p.name}${p.retro?'̇':''}</text>`;
     });
   }
-  labels += `<text x="200" y="135" class="lagna-mark" text-anchor="middle">लग्न</text>`;
-  return `<svg viewBox="0 0 400 400" class="chart-svg" xmlns="http://www.w3.org/2000/svg">
-    <rect x="0" y="0" width="400" height="400" fill="#fdfaf2"/>
-    <rect x="10" y="10" width="380" height="380" fill="none" stroke="#7a1f1f" stroke-width="2"/>
-    <line x1="10" y1="10" x2="390" y2="390" stroke="#7a1f1f" stroke-width="1.5"/>
-    <line x1="390" y1="10" x2="10" y2="390" stroke="#7a1f1f" stroke-width="1.5"/>
-    <polygon points="200,10 390,200 200,390 10,200" fill="none" stroke="#7a1f1f" stroke-width="1.5"/>
+  // Lagna marker on house 1
+  labels += `<text x="200" y="155" font-size="10" font-style="italic" fill="${C}" text-anchor="middle" font-family="Cormorant Garamond, serif" font-weight="700">${opts.label||'लग्न'}</text>`;
+
+  return `<svg viewBox="0 0 400 400" class="chart-svg" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+    <defs>
+      <linearGradient id="bg-${color}" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#fdfaf2"/>
+        <stop offset="100%" stop-color="#f7f0dc"/>
+      </linearGradient>
+    </defs>
+    <!-- Background -->
+    <rect x="0" y="0" width="400" height="400" fill="url(#bg-${color})" rx="6"/>
+    <!-- Outer square -->
+    <rect x="20" y="20" width="360" height="360" fill="none" stroke="${C}" stroke-width="2.5"/>
+    <!-- Two diagonals -->
+    <line x1="20" y1="20" x2="380" y2="380" stroke="${C}" stroke-width="2"/>
+    <line x1="380" y1="20" x2="20" y2="380" stroke="${C}" stroke-width="2"/>
+    <!-- Inner diamond (square rotated 45°) -->
+    <polygon points="200,20 380,200 200,380 20,200" fill="none" stroke="${C}" stroke-width="2"/>
     ${labels}
   </svg>`;
 }
 
-function drawBhavChalit(positions, cusps){
-  const ascR = rashiOf(cusps[0]);
+function _planetsForHouse(positions, ascLon, byHouse=null){
+  // Returns 12-element array of arrays of {name, retro}
+  const ascR = rashiOf(ascLon);
   const houses = Array.from({length:12},()=>[]);
+  if(byHouse){
+    // Use pre-computed house-by-cusp assignments (Bhav Chalit)
+    for(const p of PLANET_ORDER){
+      const h = byHouse[p];
+      if(h !== undefined && h >= 1 && h <= 12){
+        houses[h-1].push({name: PLANET_ABBR[p], retro: positions[p]?.retro});
+      }
+    }
+  } else {
+    for(const p of PLANET_ORDER){
+      const lon = positions[p]?.fullDeg ?? positions[p]?.lon;
+      if(lon === undefined) continue;
+      const r = rashiOf(lon);
+      const h = (r - ascR + 12) % 12;
+      houses[h].push({name: PLANET_ABBR[p], retro: positions[p]?.retro});
+    }
+  }
+  return houses;
+}
+
+function drawNorthChart(positions, ascLon, color='maroon', label='लग्न'){
+  const ascR = rashiOf(ascLon);
+  const houses = _planetsForHouse(positions, ascLon);
+  const signNums = Array.from({length:12}, (_,i) => (ascR + i) % 12 + 1);
+  return _renderHouses(houses, signNums, color, {label});
+}
+
+function drawBhavChalit(positions, cusps, color='sage'){
+  // Assign each planet to the house bounded by cusps[i] and cusps[i+1]
+  const ascR = rashiOf(cusps[0]);
+  const byHouse = {};
   for(const p of PLANET_ORDER){
     const lon = positions[p]?.fullDeg ?? positions[p]?.lon;
-    if(lon===undefined) continue;
-    let placed=false;
+    if(lon === undefined) continue;
+    let placed = false;
     for(let i=0;i<12;i++){
-      const c1=cusps[i], c2=cusps[(i+1)%12];
-      const inH = c2>c1 ? (lon>=c1&&lon<c2) : (lon>=c1||lon<c2);
-      if(inH){ houses[i].push(PLANETS_HI[p].substring(0,3)); placed=true; break; }
+      const c1 = cusps[i], c2 = cusps[(i+1)%12];
+      const inH = c2 > c1 ? (lon >= c1 && lon < c2) : (lon >= c1 || lon < c2);
+      if(inH){ byHouse[p] = i+1; placed = true; break; }
     }
-    if(!placed) houses[0].push(PLANETS_HI[p].substring(0,3));
+    if(!placed) byHouse[p] = 1;
   }
-  const signs = Array.from({length:12},(_,i)=>(ascR+i)%12+1);
-  const centers = [
-    {x:200,y:115,num:{x:200,y:75}},   {x:120,y:80,num:{x:80,y:55}},
-    {x:80,y:120,num:{x:40,y:100}},    {x:120,y:200,num:{x:80,y:200}},
-    {x:80,y:280,num:{x:40,y:300}},    {x:120,y:320,num:{x:80,y:345}},
-    {x:200,y:285,num:{x:200,y:325}},  {x:280,y:320,num:{x:320,y:345}},
-    {x:320,y:280,num:{x:360,y:300}},  {x:280,y:200,num:{x:320,y:200}},
-    {x:320,y:120,num:{x:360,y:100}},  {x:280,y:80,num:{x:320,y:55}}
-  ];
-  let labels = '';
-  for(let i=0;i<12;i++){
-    const c = centers[i];
-    labels += `<text x="${c.num.x}" y="${c.num.y}" class="house-num" text-anchor="middle">${signs[i]}</text>`;
-    houses[i].forEach((pl,idx)=>{
-      labels += `<text x="${c.x}" y="${c.y+idx*12-(houses[i].length-1)*6}" class="planet-label" text-anchor="middle">${pl}</text>`;
-    });
-  }
-  return `<svg viewBox="0 0 400 400" class="chart-svg" xmlns="http://www.w3.org/2000/svg">
-    <rect x="0" y="0" width="400" height="400" fill="#fdfaf2"/>
-    <rect x="10" y="10" width="380" height="380" fill="none" stroke="#4a6741" stroke-width="2"/>
-    <line x1="10" y1="10" x2="390" y2="390" stroke="#4a6741" stroke-width="1.5"/>
-    <line x1="390" y1="10" x2="10" y2="390" stroke="#4a6741" stroke-width="1.5"/>
-    <polygon points="200,10 390,200 200,390 10,200" fill="none" stroke="#4a6741" stroke-width="1.5"/>
-    ${labels}
-  </svg>`;
+  const houses = _planetsForHouse(positions, cusps[0], byHouse);
+  const signNums = Array.from({length:12}, (_,i) => (ascR + i) % 12 + 1);
+  return _renderHouses(houses, signNums, color, {label:'लग्न'});
 }
 
 /* ============ Place autocomplete (11,050 cities) ============ */
