@@ -137,20 +137,47 @@ input:focus, select:focus{
 .id-strip .field span:first-child{color:var(--maroon); font-weight:700; font-size:7.5px; text-transform:uppercase; letter-spacing:0.5px;}
 .id-strip .field span:last-child{font-weight:600; color:var(--ink);}
 
-/* Chart grid: 4 small charts in 2x2 */
+/* Parashara 6-cell layout: 3 rows × 2 cols */
 .pdf-charts{
-  display:grid; grid-template-columns:repeat(4,1fr); gap:6px;
-  margin-bottom:10px;
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  grid-template-rows:repeat(3,auto);
+  gap:8px; margin-bottom:10px;
 }
 .pdf-chart{
-  border:1px solid var(--line); border-radius:4px; padding:4px;
-  background:#fdfaf2; text-align:center;
+  border:1px solid var(--maroon); border-radius:4px; padding:6px 8px;
+  background:#fdfaf2;
 }
 .pdf-chart .label{
-  font-family:'Cormorant Garamond',serif; font-size:10px;
-  font-weight:700; color:var(--maroon); margin-bottom:2px;
+  font-family:'Cormorant Garamond',serif; font-size:12px;
+  font-weight:700; color:var(--maroon);
+  border-bottom:1px solid var(--gold); padding-bottom:3px;
+  margin-bottom:5px; letter-spacing:0.3px;
+  display:flex; justify-content:space-between; align-items:center;
 }
-.pdf-chart svg{width:100%; height:auto; display:block; max-width:170px; margin:0 auto;}
+.pdf-chart .label .tag{
+  font-size:9px; background:var(--maroon); color:#fff;
+  padding:1px 6px; border-radius:8px; font-weight:600;
+  letter-spacing:0.4px;
+}
+.pdf-chart svg{width:100%; height:auto; display:block; max-width:260px; margin:0 auto;}
+.dasha-cell{
+  border:1px solid var(--maroon); border-radius:4px; padding:6px 8px;
+  background:#fdfaf2; font-size:8.5px;
+}
+.dasha-cell h4{
+  font-family:'Cormorant Garamond',serif; font-size:12px;
+  color:var(--maroon); border-bottom:1px solid var(--gold);
+  padding-bottom:3px; margin-bottom:4px; letter-spacing:0.3px;
+  display:flex; justify-content:space-between;
+}
+.dasha-cell .tag{font-size:9px; background:var(--maroon); color:#fff; padding:1px 6px; border-radius:8px; font-weight:600;}
+.dasha-cell .dasha-row{
+  display:flex; justify-content:space-between;
+  padding:1.5px 0; border-bottom:1px dotted var(--line-soft);
+  font-size:8px;
+}
+.dasha-cell .dasha-row span:first-child{font-weight:600;}
 
 /* Tables */
 .pdf-page table{
@@ -560,31 +587,51 @@ function buildPdfPage(state){
     dCols+=col;
   }
 
-  // Charts
-  const lagSvg=drawChart(state.planets,state.ascNirayana,'#7a1f1f');
-  const navSvg=drawChart(navPos(state.planets),navLagna(state.ascNirayana),'#b04a2f');
-  const chSvg=drawChart(state.planets,state.planets.moon.lon,'#1e3a5f');
+  // === Compute the 5 charts in the Parashara layout ===
+  // 1. Janma Kundli (D-1 Rasi)
+  const lagSvg = drawChart(state.planets, state.ascNirayana, '#7a1f1f');
 
-  // Bhav Chalit: compute house assignment from cusps
-  const bhavPos={};
+  // 2. Bhav (Sripati) — planets placed by Sripati cusp ranges
+  const bhavSripatiSvg = drawBhavSvg(state.planets, state.cuspsNirayana, '#1e3a5f');
+
+  // 3. D-9 Varga Navansh (Jeevansathi)
+  const navSvg = drawChart(navPos(state.planets), navLagna(state.ascNirayana), '#b04a2f');
+
+  // 4. Bhav (Samavibhajan) — Equal-house planets (each bhav = 30° from Lagna)
+  const equalCusps = Array.from({length:12}, (_, i) => norm360(state.ascNirayana + i*30));
+  const bhavEqualSvg = drawBhavSvg(state.planets, equalCusps, '#b8860b');
+
+  // 5. Krishnamurti Kundli (KP — sidereal with KP ayanamsa ≈ Lahiri - 5'35")
+  const kpAyan = state.ayan - 5.583/60;
+  const kpPlanets = {};
   for(const p of P_ORDER){
-    const l=state.planets[p].lon;
-    let h=1;
-    for(let i=0;i<12;i++){
-      const c1=state.cuspsNirayana[i],c2=state.cuspsNirayana[(i+1)%12];
-      const inH=c2>c1?(l>=c1&&l<c2):(l>=c1||l<c2);
-      if(inH){h=i+1;break;}
-    }
-    bhavPos[p]=h;
+    kpPlanets[p] = { lon: norm360(state.planets[p].tropical - kpAyan), retro: state.planets[p].retro };
   }
-  // Bhav chalit chart by building positions adjusted by house
-  const bcSvg=drawBhavSvg(state.planets,state.cuspsNirayana,'#4a6741');
+  const ascKP = norm360(state.ascSayana - kpAyan);
+  const kpSvg = drawChart(kpPlanets, ascKP, '#4a6741');
+
+  // 6. Vimshottari Dasha — compact current+upcoming list (like the right column in the screenshot)
+  // Build flat list of currently-active and next dashas with dates
+  const today = new Date();
+  let dashaCellRows = '';
+  let count = 0;
+  // Find current Mahadasha
+  for(const md of state.dasha.dashas){
+    if(count >= 10) break;
+    for(const ad of md.antars){
+      if(count >= 10) break;
+      if(ad.end < today) continue;
+      const weekday = ['रवि','सोम','मंगल','बुध','गुरू','शुक्र','शनि'][ad.start.getDay()] + 'वार';
+      dashaCellRows += `<div class="dasha-row"><span class="devanagari">${md.lord}-${ad.lord}</span><span><span class="devanagari">${weekday}</span> <span class="mono">${fmtD(ad.start)}</span></span></div>`;
+      count++;
+    }
+  }
 
   return `<div class="pdf-page" id="pdfPage">
     <div class="ph-header">
       <div>
         <h1>श्री गणेशाय नमः · Kundli of ${state.name}</h1>
-        <div style="font-size:9px;color:#5a4a32;font-style:italic;">Classical Vedic Birth Chart · Lahiri Sidereal · Sripati Bhav</div>
+        <div style="font-size:9px;color:#5a4a32;font-style:italic;">Classical Parashari Birth Chart · Lahiri Sidereal · Topocentric</div>
       </div>
       <div class="om">🕉</div>
       <div class="meta">
@@ -601,11 +648,32 @@ function buildPdfPage(state){
       <div class="field"><span>Time Zone</span><span>UTC+${state.tz}</span></div>
     </div>
 
+    <!-- 5 Charts + Vimshottari in 3×2 Parashara layout -->
     <div class="pdf-charts">
-      <div class="pdf-chart"><div class="label">लग्न · Rasi D-1</div>${lagSvg}</div>
-      <div class="pdf-chart"><div class="label">नवमांश · D-9</div>${navSvg}</div>
-      <div class="pdf-chart"><div class="label">भाव चलित · Bhav</div>${bcSvg}</div>
-      <div class="pdf-chart"><div class="label">चन्द्र · Moon Chart</div>${chSvg}</div>
+      <div class="pdf-chart">
+        <div class="label"><span>जन्म कुंडली · Janma (D-1 Rasi)</span><span class="tag">LAGNA</span></div>
+        ${lagSvg}
+      </div>
+      <div class="pdf-chart">
+        <div class="label"><span>भाव (श्रीपति) · Bhav Sripati</span><span class="tag" style="background:#1e3a5f;">SRIPATI</span></div>
+        ${bhavSripatiSvg}
+      </div>
+      <div class="pdf-chart">
+        <div class="label"><span>वर्ग नवांश (जीवनसाथी) · D-9 Navansh</span><span class="tag" style="background:#b04a2f;">D-9</span></div>
+        ${navSvg}
+      </div>
+      <div class="pdf-chart">
+        <div class="label"><span>भाव (समविभाजन) · Bhav Samavibhajan</span><span class="tag" style="background:#b8860b;">EQUAL</span></div>
+        ${bhavEqualSvg}
+      </div>
+      <div class="pdf-chart">
+        <div class="label"><span>कृष्णमूर्ति कुंडली · Krishnamurti</span><span class="tag" style="background:#4a6741;">KP</span></div>
+        ${kpSvg}
+      </div>
+      <div class="dasha-cell">
+        <h4><span>विंशोत्तरी · Vimshottari</span><span class="tag">DASHA</span></h4>
+        ${dashaCellRows}
+      </div>
     </div>
 
     <div style="display:grid;grid-template-columns:2fr 1.3fr;gap:8px;">
@@ -625,11 +693,8 @@ function buildPdfPage(state){
       </div>
     </div>
 
-    <h3>विंशोत्तरी दशा · Vimshottari (Maha + Antar)</h3>
-    <div class="dasha-grid">${dCols}</div>
-
     <div class="pdf-footer">
-      <span>🕉 Kundli Pro Max · One-Page PDF Generator</span>
+      <span>🕉 Kundli Pro Max · Parashara One-Page Layout</span>
       <span>Birth Mahadasha: <b class="devanagari">${state.dasha.balanceLord}</b> · Balance ${state.dasha.balance.toFixed(2)} वर्ष · JD ${state.JD.toFixed(2)}</span>
     </div>
   </div>`;
