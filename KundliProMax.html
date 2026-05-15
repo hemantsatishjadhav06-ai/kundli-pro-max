@@ -1,0 +1,1740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kundli Pro Max — Classic Vedic Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============ Subtle Classic Light Theme ============ */
+:root {
+  --paper: #fdfaf2;
+  --paper-2: #f7f0dc;
+  --paper-3: #ede1c0;
+  --ink: #2c2418;
+  --ink-soft: #5a4a32;
+  --maroon: #7a1f1f;
+  --maroon-soft: #a64545;
+  --navy: #1e3a5f;
+  --navy-soft: #3a5a82;
+  --gold: #b8860b;
+  --gold-soft: #d4a93c;
+  --sage: #4a6741;
+  --rust: #b04a2f;
+  --line: #d7c89b;
+  --line-soft: #e8dcb4;
+  --shadow: 0 2px 12px rgba(122, 31, 31, 0.08);
+  --shadow-deep: 0 8px 32px rgba(44, 36, 24, 0.12);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: var(--paper); }
+body {
+  font-family: 'Inter', 'Noto Sans Devanagari', system-ui, sans-serif;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(247, 240, 220, 0.7) 0%, rgba(253, 250, 242, 0.8) 100%),
+    url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23b8860b' fill-opacity='0.04'%3E%3Cpath d='M40 0L48 32L80 40L48 48L40 80L32 48L0 40L32 32z'/%3E%3C/g%3E%3C/svg%3E");
+  min-height: 100vh;
+  padding: 18px;
+  line-height: 1.5;
+  font-size: 13px;
+}
+
+.dashboard {
+  max-width: 1500px;
+  margin: 0 auto;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  box-shadow: var(--shadow-deep);
+  overflow: hidden;
+}
+
+/* ============ Header ============ */
+header.hero {
+  background:
+    linear-gradient(180deg, rgba(247, 240, 220, 0.5), rgba(253, 250, 242, 0.9)),
+    radial-gradient(circle at 20% 20%, rgba(184, 134, 11, 0.15), transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(122, 31, 31, 0.12), transparent 50%);
+  padding: 28px 36px 22px;
+  border-bottom: 2px double var(--maroon);
+  position: relative;
+}
+header.hero::before, header.hero::after {
+  content: '🕉'; position: absolute; font-size: 32px; color: var(--maroon); opacity: 0.7;
+}
+header.hero::before { left: 36px; top: 22px; }
+header.hero::after { right: 36px; top: 22px; }
+
+header.hero h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 36px; font-weight: 700; color: var(--maroon);
+  text-align: center; letter-spacing: 1.2px;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.6);
+}
+header.hero .tagline {
+  text-align: center; color: var(--ink-soft); font-style: italic;
+  font-size: 13px; margin-top: 4px; letter-spacing: 0.6px;
+}
+header.hero .ornament {
+  text-align: center; color: var(--gold); font-size: 18px; margin: 6px 0 0;
+  letter-spacing: 8px;
+}
+
+/* ============ Native Identity Strip ============ */
+.identity-strip {
+  background: var(--paper-2);
+  border-bottom: 1px solid var(--line);
+  padding: 12px 36px;
+  display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;
+  font-size: 13px;
+}
+.identity-strip .item { display: flex; flex-direction: column; align-items: center; }
+.identity-strip .item span:first-child {
+  font-size: 10px; text-transform: uppercase; letter-spacing: 1px;
+  color: var(--maroon); font-weight: 600;
+}
+.identity-strip .item span:last-child {
+  font-family: 'Cormorant Garamond', serif; font-size: 16px;
+  font-weight: 600; color: var(--ink);
+}
+
+/* ============ Input Card ============ */
+.input-card {
+  background: var(--paper);
+  padding: 18px 36px;
+  border-bottom: 1px solid var(--line);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  align-items: end;
+}
+.input-card label {
+  display: flex; flex-direction: column; gap: 4px;
+  font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px;
+  color: var(--maroon); font-weight: 600;
+}
+.input-card input, .input-card select {
+  padding: 8px 10px; background: #fff;
+  border: 1px solid var(--line); border-radius: 6px;
+  font-size: 13px; color: var(--ink); font-family: inherit;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.input-card input:focus, .input-card select:focus {
+  outline: none; border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(184, 134, 11, 0.15);
+}
+.input-card .btn {
+  padding: 10px 18px;
+  background: linear-gradient(180deg, var(--maroon), #5a1212);
+  color: #fdfaf2; border: none; border-radius: 6px;
+  font-weight: 600; font-size: 13px; letter-spacing: 0.6px;
+  cursor: pointer; text-transform: uppercase;
+  box-shadow: var(--shadow); transition: all 0.15s;
+}
+.input-card .btn:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(122, 31, 31, 0.25); }
+.input-card .btn.secondary {
+  background: linear-gradient(180deg, var(--navy), #102845);
+}
+.input-card .btn.gold {
+  background: linear-gradient(180deg, var(--gold), #8a6500);
+}
+
+/* ============ Status Pills ============ */
+.status-bar {
+  background: var(--paper-2);
+  padding: 8px 36px;
+  border-bottom: 1px solid var(--line-soft);
+  display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;
+  font-size: 11px;
+}
+.pill {
+  padding: 3px 10px; border-radius: 12px;
+  font-weight: 600; letter-spacing: 0.4px; text-transform: uppercase;
+  font-size: 10px;
+}
+.pill-api { background: #e8f0e4; color: var(--sage); border: 1px solid var(--sage); }
+.pill-local { background: #f5e6d3; color: var(--rust); border: 1px solid var(--rust); }
+.pill-loading { background: #e0e8f0; color: var(--navy); border: 1px solid var(--navy); animation: pulse 1.4s infinite; }
+.pill-warn { background: #fef3d6; color: var(--gold); border: 1px solid var(--gold); }
+@keyframes pulse { 50% { opacity: 0.55; } }
+
+/* ============ Section Headers ============ */
+.section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px; font-weight: 700; color: var(--maroon);
+  text-align: center; margin: 32px 0 6px;
+  letter-spacing: 1.5px;
+  position: relative;
+}
+.section-title::before, .section-title::after {
+  content: ''; display: inline-block; width: 60px; height: 1px;
+  background: var(--gold); vertical-align: middle; margin: 0 16px;
+}
+.section-sub {
+  text-align: center; color: var(--ink-soft);
+  font-style: italic; font-size: 12px; margin-bottom: 18px;
+  letter-spacing: 0.6px;
+}
+
+/* ============ Content & Cards ============ */
+.content { padding: 0 24px 32px; }
+
+.card {
+  background: #fffdf6;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 16px 18px;
+  box-shadow: var(--shadow);
+  margin-bottom: 14px;
+}
+.card h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 17px; font-weight: 700; color: var(--maroon);
+  margin-bottom: 10px; padding-bottom: 6px;
+  border-bottom: 1px dotted var(--gold);
+  letter-spacing: 0.6px;
+}
+
+/* ============ Chart Grid (4 charts in 2x2) ============ */
+.charts-grid {
+  display: grid; gap: 18px;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  margin-bottom: 24px;
+}
+.chart-card {
+  background: #fffdf6;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 14px;
+  box-shadow: var(--shadow);
+  position: relative;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.chart-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(44, 36, 24, 0.12); }
+.chart-card .chart-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px; font-weight: 700; color: var(--maroon);
+  text-align: center; margin-bottom: 4px; letter-spacing: 0.8px;
+}
+.chart-card .chart-sub {
+  text-align: center; color: var(--ink-soft); font-size: 11px;
+  font-style: italic; margin-bottom: 10px; letter-spacing: 0.4px;
+}
+.chart-card .chart-tag {
+  position: absolute; top: 8px; right: 10px;
+  background: var(--maroon); color: #fff;
+  padding: 2px 8px; border-radius: 10px;
+  font-size: 9px; font-weight: 700; letter-spacing: 0.8px;
+}
+.chart-card .chart-tag.sayana { background: var(--gold); }
+.chart-card .chart-tag.kp { background: var(--navy); }
+.chart-card .chart-tag.bhav { background: var(--sage); }
+.chart-card .chart-tag.navamsa { background: var(--rust); }
+
+.chart-svg, .chart-card svg {
+  width: 100%; max-width: 380px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  display: block; margin: 0 auto;
+}
+
+/* ============ Tables ============ */
+table {
+  width: 100%; border-collapse: collapse;
+  background: #fffdf6;
+  border: 1px solid var(--line);
+  border-radius: 6px; overflow: hidden;
+  font-size: 12px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow);
+}
+thead th {
+  background: linear-gradient(180deg, var(--paper-3), var(--paper-2));
+  color: var(--maroon);
+  padding: 9px 10px;
+  text-align: left;
+  font-weight: 700;
+  font-size: 10.5px;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  border-bottom: 2px solid var(--gold);
+}
+tbody td {
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--line-soft);
+  color: var(--ink);
+}
+tbody tr:nth-child(even) td { background: rgba(247, 240, 220, 0.35); }
+tbody tr:hover td { background: rgba(184, 134, 11, 0.1); }
+.center { text-align: center; }
+.mono { font-family: 'SF Mono', 'Consolas', monospace; font-size: 11.5px; }
+
+.devanagari { font-family: 'Noto Sans Devanagari', serif; font-weight: 600; }
+
+/* ============ Basic Details Grid ============ */
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 14px;
+}
+.detail-card {
+  background: #fffdf6;
+  border-left: 3px solid var(--gold);
+  border-radius: 4px;
+  padding: 12px 14px;
+  box-shadow: var(--shadow);
+}
+.detail-card h4 {
+  font-family: 'Cormorant Garamond', serif;
+  color: var(--maroon); font-size: 15px;
+  margin-bottom: 8px; font-weight: 700;
+  letter-spacing: 0.5px;
+}
+.detail-row {
+  display: flex; justify-content: space-between;
+  padding: 4px 0; font-size: 12px;
+  border-bottom: 1px dotted var(--line);
+}
+.detail-row:last-child { border-bottom: none; }
+.detail-row span:first-child { color: var(--ink-soft); font-weight: 500; }
+.detail-row span:last-child {
+  color: var(--ink); font-weight: 600;
+  font-family: 'SF Mono', monospace; font-size: 11.5px;
+}
+
+/* ============ Aspect Grid ============ */
+.aspect-cell {
+  font-family: 'SF Mono', monospace; font-size: 10px;
+  text-align: center; padding: 4px !important;
+}
+.asp-CONJ { background: rgba(184, 134, 11, 0.18); color: var(--gold); font-weight: 700; }
+.asp-OPPO { background: rgba(176, 74, 47, 0.18); color: var(--rust); font-weight: 700; }
+.asp-TRIN { background: rgba(74, 103, 65, 0.18); color: var(--sage); font-weight: 700; }
+.asp-SQUR { background: rgba(30, 58, 95, 0.18); color: var(--navy); font-weight: 700; }
+.asp-SEXT { background: rgba(122, 31, 31, 0.15); color: var(--maroon); font-weight: 700; }
+.asp-QUIN, .asp-SESQ, .asp-QUQU, .asp-PARL { color: var(--ink-soft); }
+
+/* ============ Retrograde / Direct Pills ============ */
+.tag {
+  display: inline-block; padding: 1px 7px; border-radius: 10px;
+  font-size: 9px; font-weight: 700; letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.tag-retro { background: var(--rust); color: #fff; }
+.tag-direct { background: var(--sage); color: #fff; }
+.tag-combust { background: var(--gold); color: #fff; }
+
+/* ============ Dasha Section ============ */
+.dasha-block {
+  background: #fffdf6;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  margin-bottom: 8px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.dasha-head {
+  background: linear-gradient(180deg, var(--paper-3), var(--paper-2));
+  padding: 10px 14px; cursor: pointer;
+  font-weight: 700; font-size: 13px;
+  color: var(--maroon); display: flex; justify-content: space-between;
+  border-bottom: 1px solid var(--line);
+  letter-spacing: 0.4px;
+  transition: background 0.15s;
+}
+.dasha-head:hover { background: linear-gradient(180deg, var(--paper-2), var(--paper-3)); }
+.dasha-head .arrow { transition: transform 0.2s; }
+.dasha-head.open .arrow { transform: rotate(90deg); }
+.dasha-body { padding: 10px 14px; display: none; font-size: 12px; }
+.dasha-body.open { display: block; }
+details summary { cursor: pointer; padding: 4px 0; color: var(--navy); font-weight: 600; }
+details summary:hover { color: var(--maroon); }
+details[open] summary { color: var(--maroon); }
+
+/* ============ Chart SVG Styling ============ */
+.planet-label {
+  font-family: 'Noto Sans Devanagari', sans-serif;
+  font-size: 10.5px; font-weight: 600; fill: var(--maroon);
+}
+.house-num {
+  font-size: 9px; fill: var(--ink-soft); font-family: 'Inter', sans-serif;
+  font-weight: 600;
+}
+.chart-line {
+  stroke: var(--maroon); stroke-width: 1.5; fill: none;
+}
+.lagna-mark {
+  font-size: 8.5px; font-weight: 700; fill: var(--rust);
+  font-family: 'Noto Sans Devanagari', sans-serif;
+}
+
+/* ============ Alert / Notes ============ */
+.note {
+  background: #fef9e7;
+  border-left: 3px solid var(--gold);
+  padding: 10px 14px; border-radius: 4px;
+  font-size: 12px; color: var(--ink-soft);
+  margin-bottom: 12px;
+}
+.note b { color: var(--maroon); }
+.note.success { background: #ecf3e3; border-left-color: var(--sage); }
+.note.error { background: #f5e1da; border-left-color: var(--rust); }
+
+/* ============ Raw API ============ */
+.raw-json {
+  background: #2c2418; color: #c9d4e1;
+  padding: 12px; border-radius: 4px;
+  font-family: 'SF Mono', monospace; font-size: 10.5px;
+  max-height: 280px; overflow: auto;
+  white-space: pre-wrap; word-break: break-all;
+  margin-top: 6px;
+}
+
+/* ============ Footer ============ */
+footer.foot {
+  padding: 18px 36px;
+  background: var(--paper-2);
+  border-top: 2px double var(--maroon);
+  text-align: center;
+  font-size: 11px;
+  color: var(--ink-soft);
+  letter-spacing: 0.5px;
+}
+footer.foot .om { color: var(--maroon); font-size: 18px; }
+footer.foot .links {
+  margin-top: 6px; display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;
+}
+footer.foot .links a {
+  color: var(--navy); text-decoration: none;
+  font-weight: 600; font-size: 11px;
+}
+footer.foot .links a:hover { color: var(--maroon); text-decoration: underline; }
+
+/* ============ Loading ============ */
+.loading {
+  text-align: center; padding: 40px;
+  color: var(--maroon); font-family: 'Cormorant Garamond', serif;
+  font-size: 18px; font-style: italic;
+}
+.spinner {
+  display: inline-block; width: 18px; height: 18px;
+  border: 2px solid var(--gold); border-top-color: transparent;
+  border-radius: 50%; animation: spin 0.8s linear infinite;
+  vertical-align: middle; margin-right: 10px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ============ Print ============ */
+@media print {
+  body { background: #fff; padding: 0; }
+  .input-card, .status-bar, footer.foot, .raw-json { display: none; }
+  .dashboard { box-shadow: none; border: none; }
+  .chart-card, .card { box-shadow: none; break-inside: avoid; }
+  .dasha-body { display: block !important; }
+}
+
+@media (max-width: 720px) {
+  body { padding: 6px; font-size: 12px; }
+  header.hero h1 { font-size: 26px; }
+  header.hero::before, header.hero::after { display: none; }
+  .content { padding: 0 12px 24px; }
+  .section-title { font-size: 18px; }
+  .section-title::before, .section-title::after { width: 24px; margin: 0 8px; }
+}
+</style>
+</head>
+<body>
+<div class="dashboard">
+
+  <header class="hero">
+    <h1>श्री गणेशाय नमः · Kundli Pro Max</h1>
+    <div class="ornament">✦ ✦ ✦</div>
+    <div class="tagline">Classical Vedic Astrology Dashboard — Parashari · KP · Sayana — Lahiri Ayanamsa</div>
+  </header>
+
+  <div class="identity-strip" id="identityStrip"></div>
+
+  <div class="input-card">
+    <label>Name <input id="iName" type="text" value="Amar Kumar" /></label>
+    <label>Gender
+      <select id="iGender"><option>Male</option><option>Female</option></select>
+    </label>
+    <label>Date of Birth <input id="iDate" type="date" value="2002-05-05" /></label>
+    <label>Time of Birth <input id="iTime" type="time" step="1" value="00:00:00" /></label>
+    <label style="position:relative;">Place (type to search 11,050+ cities)
+      <input id="iPlaceSearch" type="text" value="Delhi (Delhi)" autocomplete="off" placeholder="Type city name…" />
+      <div id="placeDrop" style="position:absolute;top:100%;left:0;right:0;background:#fff;border:1px solid var(--line);border-radius:0 0 6px 6px;max-height:240px;overflow-y:auto;display:none;z-index:100;box-shadow:var(--shadow-deep);"></div>
+    </label>
+    <label>Lat <input id="iLat" type="number" step="0.0001" value="28.6139" /></label>
+    <label>Lon <input id="iLon" type="number" step="0.0001" value="77.2090" /></label>
+    <label>TZ <input id="iTz" type="number" step="0.25" value="5.5" /></label>
+    <label>Bhav System
+      <select id="iBhavSys">
+        <option value="sripati" selected>Sripati (Parashari)</option>
+        <option value="placidus">Placidus (KP)</option>
+        <option value="equal">Equal House</option>
+      </select>
+    </label>
+    <label>API Mode
+      <select id="iMode">
+        <option value="hybrid" selected>Hybrid (API + Local)</option>
+        <option value="api">API Only</option>
+        <option value="local">Local Only</option>
+      </select>
+    </label>
+    <label>Proxy URL (optional)
+      <input id="iProxy" type="text" placeholder="http://localhost:8787" value="" />
+    </label>
+    <label>API Key
+      <input id="iApiKey" type="password" value="I1lmUcObH99laDS3k5jeU8zohpFgtYsa0jx33SW3" />
+    </label>
+    <button class="btn" onclick="compute()">⚡ Generate</button>
+    <button class="btn gold" onclick="shareLink()">🔗 Share</button>
+    <button class="btn secondary" onclick="window.print()">🖨 Print</button>
+  </div>
+
+  <div class="status-bar" id="statusBar"></div>
+
+  <div class="content">
+
+    <!-- ============ All Charts at Top ============ -->
+    <div class="section-title">कुंडली चार्ट्स · Kundalini Charts</div>
+    <div class="section-sub">Lagna (D-1) · Navamsa (D-9) · Chandra · Bhav Chalit · Sayana · KP — all six layouts at a glance</div>
+
+    <div class="charts-grid" id="chartsGrid">
+      <div class="loading"><span class="spinner"></span>Computing classical positions…</div>
+    </div>
+
+    <!-- ============ Basic Details ============ -->
+    <div class="section-title">जन्म विवरण · Birth Particulars</div>
+    <div class="section-sub">Janma Patrika — Personal · Geographic · Panchang · Samvat · Lagna</div>
+    <div id="basicDetails"></div>
+
+    <!-- ============ Nirayana Table ============ -->
+    <div class="section-title">निरयण कुंडली · Nirayana (Sidereal — Lahiri)</div>
+    <div class="section-sub">Full planetary positions: Graha · Rashi · Ansh · R/M · Nakshatra · Pada · Lords</div>
+    <div id="nirayanaTable"></div>
+
+    <!-- ============ Sayana Table + Aspects ============ -->
+    <div class="section-title">सायन कुंडली · Sayana (Tropical — Western)</div>
+    <div class="section-sub">Tropical longitudes + full aspect grid (CONJ · OPPO · TRIN · SQUR · SEXT · QUIN · SESQ · QUQU)</div>
+    <div id="sayanaTable"></div>
+
+    <!-- ============ KP Table ============ -->
+    <div class="section-title">कृष्णमूर्ति पद्धति · KP System</div>
+    <div class="section-sub">Sign Lord → Star Lord → Sub Lord → Sub-Sub Lord (4-level Krishnamurti chain) + 12 Cuspal Sub Lords</div>
+    <div id="kpTable"></div>
+
+    <!-- ============ Bhav Chalit ============ -->
+    <div class="section-title">भाव चलित · Bhav Chalit (House Placement)</div>
+    <div class="section-sub">Actual Placidus house occupancy — not just sign-based — for every planet</div>
+    <div id="bhavTable"></div>
+
+    <!-- ============ All Vargas ============ -->
+    <div class="section-title">वर्ग कुंडली · Divisional Charts</div>
+    <div class="section-sub">D-1 Rasi · D-2 Hora · D-3 Drekkana · D-7 · D-9 Navamsa · D-10 Dasamsa · D-12 · D-16 · D-20 · D-24 · D-30 Trimsamsa · D-60</div>
+    <div class="charts-grid" id="vargasGrid"></div>
+
+    <!-- ============ Vimshottari Dasha ============ -->
+    <div class="section-title">विंशोत्तरी दशा · Vimshottari Dasha</div>
+    <div class="section-sub">120-year cycle · Maha → Antar → Pratyantar (three-level breakdown)</div>
+    <div id="dashaTable"></div>
+
+    <!-- ============ Raw API ============ -->
+    <div class="section-title">🧬 Raw API Diagnostic</div>
+    <div class="section-sub">Endpoint-by-endpoint responses from json.freeastrologyapi.com</div>
+    <div id="rawApi"></div>
+
+  </div>
+
+  <footer class="foot">
+    <span class="om">🕉</span> Kundli Pro Max · Classic Edition · Lahiri NC + KP + Sayana ayanamshas · Topocentric
+    <div class="links">
+      <a href="#" onclick="shareLink();return false;">📋 Copy shareable URL</a>
+      <a href="#" onclick="exportJson();return false;">💾 Export JSON</a>
+      <a href="#" onclick="window.print();return false;">🖨 Print PDF</a>
+    </div>
+    <div style="margin-top:8px;font-size:10px;opacity:0.7;">
+      Powered by freeastrologyapi.com + local VSOP87/ELP-2000 fallback engine
+    </div>
+  </footer>
+
+</div>
+
+<script>
+/* ============================================================
+   KUNDLI PRO MAX — CLASSIC EDITION
+   Single-dashboard rendering · Light theme · URL-parameter scheduling
+   ============================================================ */
+
+const API_BASE = 'https://json.freeastrologyapi.com';
+const RAD = Math.PI/180, DEG = 180/Math.PI;
+
+const RASHIS = ['मेष','वृष','मिथुन','कर्क','सिंह','कन्या','तुला','वृश्चिक','धनु','मकर','कुंभ','मीन'];
+const RASHIS_EN = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
+const RASHI_LORDS = ['मंगल','शुक्र','बुध','चन्द्र','सूर्य','बुध','शुक्र','मंगल','गुरू','शनि','शनि','गुरू'];
+const NAKSHATRAS = ['अश्विनी','भरणी','कृत्तिका','रोहिणी','मृगशिरा','आर्द्रा','पुनर्वसु','पुष्य','अश्लेषा','मघा','पूर्व फाल्गुनी','उत्तर फाल्गुनी','हस्त','चित्रा','स्वाति','विशाखा','अनुराधा','ज्येष्ठा','मूल','पूर्व आषाढा','उत्तर आषाढा','श्रवण','धनिष्ठा','शतभिषा','पूर्व भाद्रपद','उत्तर भाद्रपद','रेवती'];
+const NAK_LORDS = ['केतु','शुक्र','सूर्य','चन्द्र','मंगल','राहु','गुरू','शनि','बुध'];
+const NAK_DASHA_YRS = {'केतु':7,'शुक्र':20,'सूर्य':6,'चन्द्र':10,'मंगल':7,'राहु':18,'गुरू':16,'शनि':19,'बुध':17};
+const DASHA_ORDER = ['केतु','शुक्र','सूर्य','चन्द्र','मंगल','राहु','गुरू','शनि','बुध'];
+
+const PLANETS_HI = {sun:'सूर्य',moon:'चन्द्र',mars:'मंगल',mercury:'बुध',jupiter:'गुरू',venus:'शुक्र',saturn:'शनि',rahu:'राहु',ketu:'केतु',uranus:'यूरेनस',neptune:'नेप्ट्यून',pluto:'प्लूटो'};
+const PLANETS_EN = {sun:'Sun',moon:'Moon',mars:'Mars',mercury:'Mercury',jupiter:'Jupiter',venus:'Venus',saturn:'Saturn',rahu:'Rahu',ketu:'Ketu',uranus:'Uranus',neptune:'Neptune',pluto:'Pluto'};
+const PLANET_ORDER = ['sun','moon','mars','mercury','jupiter','venus','saturn','rahu','ketu','uranus','neptune','pluto'];
+
+const TITHIS = ['प्रतिपदा','द्वितीया','तृतीया','चतुर्थी','पंचमी','षष्ठी','सप्तमी','अष्टमी','नवमी','दशमी','एकादशी','द्वादशी','त्रयोदशी','चतुर्दशी','पूर्णिमा'];
+const YOGAS = ['विष्कम्भ','प्रीति','आयुष्मान','सौभाग्य','शोभन','अतिगण्ड','सुकर्मा','धृति','शूल','गण्ड','वृद्धि','ध्रुव','व्याघात','हर्षण','वज्र','सिद्धि','व्यतीपात','वरीयान','परिघ','शिव','सिद्ध','साध्य','शुभ','शुक्ल','ब्रह्म','इन्द्र','वैधृति'];
+const KARANAS = ['बव','बालव','कौलव','तैतिल','गर','वणिज','विष्टि','शकुनि','चतुष्पाद','नाग','किंस्तुघ्न'];
+
+const API_NAME_MAP = {'Sun':'sun','Moon':'moon','Mars':'mars','Mercury':'mercury','Jupiter':'jupiter','Venus':'venus','Saturn':'saturn','Rahu':'rahu','Ketu':'ketu','Uranus':'uranus','Neptune':'neptune','Pluto':'pluto','Ascendant':'asc','Lagna':'asc'};
+
+/* ============ Math utilities ============ */
+function norm360(x){ x = x % 360; return x < 0 ? x + 360 : x; }
+function dmsString(deg){
+  const sign = deg < 0 ? '-' : ''; deg = Math.abs(deg);
+  const d = Math.floor(deg), m_ = (deg-d)*60, m = Math.floor(m_), s = Math.round((m_-m)*60);
+  return `${sign}${String(d).padStart(2,'0')}°${String(m).padStart(2,'0')}'${String(s).padStart(2,'0')}"`;
+}
+function rashiOf(lon){ return Math.floor(norm360(lon)/30); }
+function degInRashi(lon){ return norm360(lon)%30; }
+function nakshatraOf(lon){
+  const span = 360/27;
+  const idx = Math.floor(norm360(lon)/span);
+  const pos = norm360(lon) - idx*span;
+  const pada = Math.floor(pos/(span/4)) + 1;
+  return { idx, name: NAKSHATRAS[idx], lord: NAK_LORDS[idx%9], pada, pos };
+}
+function julianDay(y,m,d,h){
+  if(m<=2){y-=1;m+=12;}
+  const A=Math.floor(y/100), B=2-A+Math.floor(A/4);
+  return Math.floor(365.25*(y+4716))+Math.floor(30.6001*(m+1))+d+h/24+B-1524.5;
+}
+function fmtDate(d){
+  return `${String(d.getDate()).padStart(2,'0')}-${String(d.getMonth()+1).padStart(2,'0')}-${d.getFullYear()}`;
+}
+function hoursToHMS(h){
+  if(h<0)h+=24; if(h>=24)h-=24;
+  const H=Math.floor(h), m=(h-H)*60, M=Math.floor(m), S=Math.round((m-M)*60);
+  return `${String(H).padStart(2,'0')}:${String(M).padStart(2,'0')}:${String(S).padStart(2,'0')}`;
+}
+function parseHMS(s){ const [h,m,sec]=s.split(':').map(Number); return h+m/60+(sec||0)/3600; }
+
+/* ============ Local astronomy (fallback) ============ */
+function lahiriAyanamsa(JD){
+  const T=(JD-2451545.0)/36525.0, yr=2000+T*100;
+  return 23.852380556 + (yr-2000)*(50.2388/3600) + 0.000139*T*T;
+}
+function kpAyanamsa(JD){ return lahiriAyanamsa(JD) - 5.583/60; }
+function sunLongitude(JD){
+  const T=(JD-2451545.0)/36525.0;
+  let L0=280.46646+36000.76983*T+0.0003032*T*T;
+  let M=norm360(357.52911+35999.05029*T-0.0001537*T*T);
+  const Mr=M*RAD;
+  const C=(1.914602-0.004817*T)*Math.sin(Mr)+(0.019993-0.000101*T)*Math.sin(2*Mr)+0.000289*Math.sin(3*Mr);
+  const omega=125.04-1934.136*T;
+  return norm360(L0+C-0.00569-0.00478*Math.sin(omega*RAD));
+}
+function moonLongitude(JD){
+  const T=(JD-2451545.0)/36525.0;
+  const Lp=norm360(218.3164477+481267.88123421*T);
+  const D=norm360(297.8501921+445267.1114034*T);
+  const M=norm360(357.5291092+35999.0502909*T);
+  const Mp=norm360(134.9633964+477198.8675055*T);
+  const F=norm360(93.2720950+483202.0175233*T);
+  let lon=Lp;
+  lon+=6.288774*Math.sin(Mp*RAD); lon+=1.274027*Math.sin((2*D-Mp)*RAD);
+  lon+=0.658314*Math.sin(2*D*RAD); lon+=0.213618*Math.sin(2*Mp*RAD);
+  lon-=0.185116*Math.sin(M*RAD); lon-=0.114332*Math.sin(2*F*RAD);
+  lon+=0.058793*Math.sin((2*D-2*Mp)*RAD); lon+=0.057066*Math.sin((2*D-M-Mp)*RAD);
+  lon+=0.053322*Math.sin((2*D+Mp)*RAD); lon+=0.045758*Math.sin((2*D-M)*RAD);
+  return norm360(lon);
+}
+function planetHelio(planet,JD){
+  const T=(JD-2451545.0)/36525.0;
+  const E={
+    mercury:{L:252.250906+149472.6746358*T,a:0.387098310,e:0.20563175+0.000020406*T},
+    venus:{L:181.979801+58517.8156760*T,a:0.723329820,e:0.00677188-0.000047766*T},
+    earth:{L:100.466449+35999.3728519*T,a:1.000001018,e:0.01670862-0.000042037*T},
+    mars:{L:355.433275+19140.2993313*T,a:1.523679342,e:0.09340062+0.000090483*T},
+    jupiter:{L:34.351484+3034.9056746*T,a:5.202603191,e:0.04849485+0.000163244*T},
+    saturn:{L:50.077471+1222.1137943*T,a:9.554909596,e:0.05550862-0.000346818*T},
+    uranus:{L:314.055005+428.4669983*T,a:19.21844606,e:0.04629590-0.000027337*T},
+    neptune:{L:304.348665+218.4862002*T,a:30.11038687,e:0.00898809+0.000006408*T},
+    pluto:{L:238.92903833+145.20780515*T,a:39.48211675,e:0.24882730+0.00005170*T}
+  };
+  const PI_LON={mercury:77.45645+0.5589*T,venus:131.53298+0.0007*T,earth:102.93735+0.3225*T,mars:336.04084+0.4439*T,jupiter:14.331309+0.2155*T,saturn:93.056787+0.5665*T,uranus:173.005159+0.0893*T,neptune:48.123691+0.0291*T,pluto:224.06676};
+  const el=E[planet], L=norm360(el.L), piL=norm360(PI_LON[planet]);
+  let M=norm360(L-piL), e=el.e, E0=M+(e*DEG)*Math.sin(M*RAD);
+  for(let i=0;i<5;i++) E0=E0-(E0-(e*DEG)*Math.sin(E0*RAD)-M)/(1-e*Math.cos(E0*RAD));
+  const Er=E0*RAD;
+  const v=2*Math.atan2(Math.sqrt(1+e)*Math.sin(Er/2),Math.sqrt(1-e)*Math.cos(Er/2))*DEG;
+  return {lon:norm360(v+piL), r:el.a*(1-e*Math.cos(Er))};
+}
+function planetGeoLocal(planet,JD){
+  if(planet==='sun')return{lon:sunLongitude(JD),retro:false};
+  if(planet==='moon')return{lon:moonLongitude(JD),retro:false};
+  if(planet==='rahu'){
+    const T=(JD-2451545.0)/36525.0;
+    return{lon:norm360(125.04452-1934.136261*T+0.0020708*T*T),retro:true};
+  }
+  if(planet==='ketu'){ const r=planetGeoLocal('rahu',JD); return{lon:norm360(r.lon+180),retro:true}; }
+  const ea=planetHelio('earth',JD), pl=planetHelio(planet,JD);
+  const ex=ea.r*Math.cos(ea.lon*RAD), ey=ea.r*Math.sin(ea.lon*RAD);
+  const px=pl.r*Math.cos(pl.lon*RAD), py=pl.r*Math.sin(pl.lon*RAD);
+  const lon1=norm360(Math.atan2(py-ey,px-ex)*DEG);
+  const ea2=planetHelio('earth',JD+1), pl2=planetHelio(planet,JD+1);
+  const ex2=ea2.r*Math.cos(ea2.lon*RAD), ey2=ea2.r*Math.sin(ea2.lon*RAD);
+  const px2=pl2.r*Math.cos(pl2.lon*RAD), py2=pl2.r*Math.sin(pl2.lon*RAD);
+  const lon2=norm360(Math.atan2(py2-ey2,px2-ex2)*DEG);
+  let diff=lon2-lon1; if(diff>180)diff-=360; if(diff<-180)diff+=360;
+  return {lon:lon1, retro: diff<0};
+}
+function lstLocal(JD,lon){
+  const T=(JD-2451545.0)/36525.0;
+  let g=280.46061837+360.98564736629*(JD-2451545.0)+0.000387933*T*T;
+  return norm360(norm360(g)+lon);
+}
+function obliquity(JD){
+  const T=(JD-2451545.0)/36525.0;
+  return 23.43929111-0.0130041667*T-1.638889e-7*T*T;
+}
+function ascendantLocal(JD,lat,lon){
+  const ramc=lstLocal(JD,lon)*RAD, eps=obliquity(JD)*RAD, phi=lat*RAD;
+  let asc = norm360(Math.atan2(-Math.cos(ramc), Math.sin(ramc)*Math.cos(eps)+Math.tan(phi)*Math.sin(eps))*DEG);
+  // Quadrant fix: ascendant must be east of MC (forward 0-180° in zodiac).
+  // The raw atan2 can land on the descendant side — flip 180° if so.
+  const mcVal = norm360(Math.atan2(Math.sin(ramc),Math.cos(ramc)*Math.cos(eps))*DEG);
+  if(norm360(asc - mcVal) > 180) asc = norm360(asc + 180);
+  return asc;
+}
+function mcLocal(JD,lon){
+  const ramc=lstLocal(JD,lon)*RAD, eps=obliquity(JD)*RAD;
+  return norm360(Math.atan2(Math.sin(ramc),Math.cos(ramc)*Math.cos(eps))*DEG);
+}
+function placidusHouses(JD,lat,lon){
+  const ramcDeg=lstLocal(JD,lon), ramc=ramcDeg*RAD, eps=obliquity(JD)*RAD, phi=lat*RAD;
+  const asc=ascendantLocal(JD,lat,lon), m=mcLocal(JD,lon);
+  const c=new Array(12); c[0]=asc; c[9]=m; c[6]=norm360(asc+180); c[3]=norm360(m+180);
+  for(let h of [10,11,1,2]){
+    const F=(h===10?1/3:h===11?2/3:h===1?2/3:1/3);
+    let ra=(h<=11?ramcDeg+(h-9)*30:ramcDeg+(h+3)*30); ra=norm360(ra)*RAD;
+    let H=ra;
+    for(let i=0;i<5;i++){
+      const D=Math.asin(Math.sin(eps)*Math.sin(H));
+      const sa=Math.acos(-Math.tan(phi)*Math.tan(D));
+      H=ra+F*sa*(h<=11?1:-1);
+    }
+    const lonH=Math.atan2(Math.sin(H),Math.cos(H)*Math.cos(eps)-Math.tan(Math.asin(Math.sin(eps)*Math.sin(H)))*Math.sin(eps))*DEG;
+    c[h-1]=norm360(lonH);
+  }
+  c[4]=norm360(c[10]+180); c[5]=norm360(c[11]+180); c[7]=norm360(c[1]+180); c[8]=norm360(c[2]+180);
+  return c;
+}
+
+/* Sripati Bhava — classical Parashari method.
+   Trisects the arc from Lagna→IC, IC→Dsc, Dsc→MC, MC→Asc.
+   Bhav Madhya (mid-cusps) are the trisection points.
+   This is what Parashara's Light shows on the "Bhav Spasht" page. */
+function sripatiBhavMadhya(JD, lat, lon){
+  const asc = ascendantLocal(JD, lat, lon);
+  const mc  = mcLocal(JD, lon);
+  const dsc = norm360(asc + 180);
+  const ic  = norm360(mc + 180);
+
+  // Choose the quadrants in correct order (Asc → IC → Dsc → MC → Asc forward in zodiac)
+  // Determine arcs
+  const arc = (a, b) => { let d = norm360(b - a); return d; };
+  const arcs = [
+    { from: asc, to: ic  },   // 1 → 4
+    { from: ic,  to: dsc },   // 4 → 7
+    { from: dsc, to: mc  },   // 7 → 10
+    { from: mc,  to: asc }    // 10 → 1
+  ];
+  const cusps = new Array(12);
+  cusps[0] = asc; cusps[3] = ic; cusps[6] = dsc; cusps[9] = mc;
+  // Trisect each quadrant
+  // 1→4: bhav 2, 3 are at +1/3, +2/3
+  cusps[1] = norm360(asc + arc(asc, ic)/3);
+  cusps[2] = norm360(asc + 2*arc(asc, ic)/3);
+  cusps[4] = norm360(ic  + arc(ic, dsc)/3);
+  cusps[5] = norm360(ic  + 2*arc(ic, dsc)/3);
+  cusps[7] = norm360(dsc + arc(dsc, mc)/3);
+  cusps[8] = norm360(dsc + 2*arc(dsc, mc)/3);
+  cusps[10]= norm360(mc  + arc(mc, asc)/3);
+  cusps[11]= norm360(mc  + 2*arc(mc, asc)/3);
+  return cusps;
+}
+
+/* Equal House — 30° increments from Lagna */
+function equalHouseCusps(asc){
+  const c = new Array(12);
+  for(let i=0;i<12;i++) c[i] = norm360(asc + i*30);
+  return c;
+}
+
+function bhavCusps(JD, lat, lon, system){
+  if(system === 'sripati') return sripatiBhavMadhya(JD, lat, lon);
+  if(system === 'equal')   return equalHouseCusps(ascendantLocal(JD, lat, lon));
+  return placidusHouses(JD, lat, lon);
+}
+
+/* ============ Panchang ============ */
+function getTithi(s,m){
+  let diff=norm360(m-s); const t=Math.floor(diff/12);
+  return {num:t+1, name: t===29?'अमावस्या':(t<15?TITHIS[t]:TITHIS[t-15]), paksha: t<15?'शुक्ल':'कृष्ण'};
+}
+function getYoga(s,m){ return YOGAS[Math.floor(norm360(s+m)/(360/27))]; }
+function getKarana(s,m){ return KARANAS[Math.floor(norm360(m-s)/6)%7]; }
+function sunriseSunsetLocal(JD,lat,lon){
+  const sLon=sunLongitude(JD), eps=obliquity(JD);
+  const decl=Math.asin(Math.sin(eps*RAD)*Math.sin(sLon*RAD))*DEG;
+  const cosH=(Math.sin(-0.833*RAD)-Math.sin(lat*RAD)*Math.sin(decl*RAD))/(Math.cos(lat*RAD)*Math.cos(decl*RAD));
+  if(cosH>1||cosH<-1)return{sunrise:'--:--:--',sunset:'--:--:--'};
+  const H=Math.acos(cosH)*DEG/15, noon=12+(lon-0)/15;
+  return {sunrise:hoursToHMS(noon-H+lon/15), sunset:hoursToHMS(noon+H+lon/15)};
+}
+
+/* ============ KP Sub-Lord ============ */
+function kpSubLord(lon){
+  const span=360/27, idx=Math.floor(norm360(lon)/span);
+  const pos=norm360(lon)-idx*span, starLord=NAK_LORDS[idx%9];
+  const startIdx=DASHA_ORDER.indexOf(starLord);
+  let acc=0;
+  for(let i=0;i<9;i++){
+    const lord=DASHA_ORDER[(startIdx+i)%9];
+    const slice=(NAK_DASHA_YRS[lord]/120)*span;
+    if(pos>=acc && pos<acc+slice){
+      let subPos=pos-acc, acc3=0;
+      for(let j=0;j<9;j++){
+        const lord2=DASHA_ORDER[(DASHA_ORDER.indexOf(lord)+j)%9];
+        const slice2=(NAK_DASHA_YRS[lord2]/NAK_DASHA_YRS[lord])*slice;
+        if(subPos>=acc3 && subPos<acc3+slice2){
+          let subSubPos=subPos-acc3, acc4=0;
+          for(let k=0;k<9;k++){
+            const lord3=DASHA_ORDER[(DASHA_ORDER.indexOf(lord2)+k)%9];
+            const slice3=(NAK_DASHA_YRS[lord3]/NAK_DASHA_YRS[lord2])*slice2;
+            if(subSubPos>=acc4 && subSubPos<acc4+slice3){
+              return {star:starLord, sub:lord, subSub:lord2, ssLord:lord3};
+            }
+            acc4+=slice3;
+          }
+          return {star:starLord, sub:lord, subSub:lord2, ssLord:lord2};
+        }
+        acc3+=slice2;
+      }
+    }
+    acc+=slice;
+  }
+  return {star:starLord, sub:starLord, subSub:starLord, ssLord:starLord};
+}
+
+/* ============ Vimshottari ============ */
+function vimshottariDashas(moonLon, birthDate){
+  const span=360/27, nakIdx=Math.floor(norm360(moonLon)/span);
+  const pos=norm360(moonLon)-nakIdx*span;
+  const lord=NAK_LORDS[nakIdx%9], lordYrs=NAK_DASHA_YRS[lord];
+  const elapsed=(pos/span)*lordYrs, balance=lordYrs-elapsed;
+  const dashas=[];
+  let cur=new Date(birthDate.getTime()-elapsed*365.25*86400*1000);
+  let startIdx=DASHA_ORDER.indexOf(lord);
+  for(let i=0;i<9;i++){
+    const L=DASHA_ORDER[(startIdx+i)%9], yrs=NAK_DASHA_YRS[L];
+    const end=new Date(cur.getTime()+yrs*365.25*86400*1000);
+    const antars=[]; let aCur=new Date(cur);
+    for(let j=0;j<9;j++){
+      const A=DASHA_ORDER[(DASHA_ORDER.indexOf(L)+j)%9];
+      const aYrs=(yrs*NAK_DASHA_YRS[A])/120;
+      const aEnd=new Date(aCur.getTime()+aYrs*365.25*86400*1000);
+      const prats=[]; let pCur=new Date(aCur);
+      for(let k=0;k<9;k++){
+        const P=DASHA_ORDER[(DASHA_ORDER.indexOf(A)+k)%9];
+        const pYrs=(aYrs*NAK_DASHA_YRS[P])/120;
+        const pEnd=new Date(pCur.getTime()+pYrs*365.25*86400*1000);
+        prats.push({lord:P, start:new Date(pCur), end:new Date(pEnd)}); pCur=pEnd;
+      }
+      antars.push({lord:A, start:new Date(aCur), end:new Date(aEnd), prats}); aCur=aEnd;
+    }
+    dashas.push({lord:L, start:new Date(cur), end:new Date(end), yrs, antars}); cur=end;
+  }
+  return {balance, balanceLord:lord, dashas};
+}
+
+function getAspect(diff){
+  diff=Math.abs(diff); if(diff>180)diff=360-diff;
+  const orbs=[{n:'CONJ',a:0,o:8},{n:'OPPO',a:180,o:8},{n:'TRIN',a:120,o:7},{n:'SQUR',a:90,o:6},{n:'SEXT',a:60,o:5},{n:'QUIN',a:72,o:2},{n:'SESQ',a:135,o:2},{n:'QUQU',a:150,o:3},{n:'PARL',a:30,o:2}];
+  for(const a of orbs) if(Math.abs(diff-a.a)<=a.o) return a.n;
+  return '';
+}
+
+/* ============ API Layer ============ */
+async function callApi(endpoint, body, apiKey, proxy){
+  const url = proxy ? `${proxy.replace(/\/$/,'')}/${endpoint}` : `${API_BASE}/${endpoint}`;
+  try {
+    const resp = await fetch(url, {
+      method:'POST',
+      headers: { 'Content-Type':'application/json', 'x-api-key': apiKey },
+      body: JSON.stringify(body)
+    });
+    const text = await resp.text();
+    let json; try { json = JSON.parse(text); } catch(e){ json = { raw: text }; }
+    if(!resp.ok) return {ok:false, status:resp.status, error:json};
+    return {ok:true, data:json};
+  } catch(e){ return {ok:false, status:0, error:e.message}; }
+}
+
+async function fetchAllCharts(birthData, apiKey, proxy){
+  const base = {
+    year:birthData.year, month:birthData.month, date:birthData.date,
+    hours:birthData.hours, minutes:birthData.minutes, seconds:birthData.seconds,
+    latitude:birthData.latitude, longitude:birthData.longitude, timezone:birthData.timezone
+  };
+  const calls = [
+    {name:'lagna_svg',     endpoint:'horoscope-chart-svg-code',                   ayan:'lahiri'},
+    {name:'kp',            endpoint:'planets/extended',                            ayan:'lahiri'},
+    {name:'nirayana',      endpoint:'planets',                                     ayan:'lahiri'},
+    {name:'bhav_chalit',   endpoint:'planets/extended',                            ayan:'lahiri'},
+    {name:'sayana',        endpoint:'planets',                                     ayan:'sayana'},
+    {name:'navamsa_svg',   endpoint:'navamsa-chart-svg-code',                      ayan:'lahiri'},
+    {name:'maha_dasas',    endpoint:'vimsottari/maha-dasas-and-antar-dasas',       ayan:'lahiri'}
+  ];
+  return Promise.all(calls.map(c => {
+    const body = {...base, config:{observation_point:'topocentric', ayanamsha:c.ayan}};
+    return callApi(c.endpoint, body, apiKey, proxy).then(r => ({name:c.name, endpoint:c.endpoint, ayan:c.ayan, ...r}));
+  }));
+}
+
+function parseApiPlanets(apiData){
+  if(!apiData) return null;
+  let raw = apiData;
+  if(typeof apiData==='string'){ try{raw=JSON.parse(apiData);}catch(e){} }
+  // Unwrap nested "output" envelope (sometimes a JSON string, sometimes object)
+  if(raw && raw.output !== undefined){
+    raw = raw.output;
+    if(typeof raw==='string'){ try{raw=JSON.parse(raw);}catch(e){} }
+  }
+  const map = {};
+  const handle = (val) => {
+    if(!val||typeof val!=='object') return false;
+    const nm = val.name || val.planet;
+    if(!nm || typeof nm !== 'string') return false;
+    const localKey = API_NAME_MAP[nm] || nm.toLowerCase();
+    if(!localKey) return false;
+    if(map[localKey]) return true;   // first occurrence wins
+    map[localKey] = {
+      name: nm,
+      fullDeg: val.fullDegree ?? val.full_degree ?? val.longitude ?? val.lon ?? val.normDegree,
+      normDeg: val.normDegree ?? val.norm_degree ?? val.degree,
+      sign: val.current_sign ?? val.sign ?? val.zodiac_sign ?? val.rasi,
+      signName: val.zodiac_sign_name ?? val.sign_name ?? null,
+      house: val.house_number ?? val.house ?? null,
+      nakshatra: val.nakshatra_name ?? val.nakshatra ?? null,
+      nakshatra_lord: val.nakshatra_vimsottari_lord ?? val.nakshatra_lord ?? null,
+      nakshatra_pada: val.nakshatra_pada ?? val.pada ?? null,
+      retro: val.isRetro === 'true' || val.isRetro === true || val.is_retrograde === true,
+      raw: val
+    };
+    return true;
+  };
+  // Recursive walker — survives the {"output":[{"0":sun,"1":moon,"debug":{}},{...}]} shape
+  const walk = (node) => {
+    if(!node || typeof node !== 'object') return;
+    if(handle(node)) return;  // captured this node as a planet
+    if(Array.isArray(node)){ for(const item of node) walk(item); return; }
+    for(const k in node){
+      if(k === 'debug' || k === 'input' || k === 'statusCode') continue;
+      walk(node[k]);
+    }
+  };
+  walk(raw);
+  return Object.keys(map).length ? map : null;
+}
+
+function getApiPlanets(name){
+  const r = STATE.results?.find(x => x.name === name);
+  if(!r||!r.ok) return null;
+  return parseApiPlanets(r.data);
+}
+function getApiSvg(name){
+  const r = STATE.results?.find(x => x.name === name);
+  if(!r||!r.ok) return null;
+  let d = r.data;
+  if(typeof d==='string') return d.includes('<svg')?d:null;
+  if(d.output && typeof d.output==='string' && d.output.includes('<svg')) return d.output;
+  const findSvg = o => {
+    if(typeof o==='string'&&o.includes('<svg')) return o;
+    if(typeof o!=='object'||!o) return null;
+    for(const k in o){ const v=findSvg(o[k]); if(v) return v; }
+    return null;
+  };
+  return findSvg(d);
+}
+
+/* ============ State + Compute ============ */
+let STATE = {};
+
+function loadFromUrl(){
+  const p = new URLSearchParams(location.search);
+  if(p.get('name')) document.getElementById('iName').value = p.get('name');
+  if(p.get('gender')) document.getElementById('iGender').value = p.get('gender');
+  if(p.get('date')) document.getElementById('iDate').value = p.get('date');
+  if(p.get('time')) document.getElementById('iTime').value = p.get('time');
+  if(p.get('lat')||p.get('lon')||p.get('tz')){
+    document.getElementById('iPlace').value = 'custom';
+    document.getElementById('customLat').style.display='';
+    document.getElementById('customLon').style.display='';
+    document.getElementById('customTz').style.display='';
+    if(p.get('lat')) document.getElementById('iLat').value = p.get('lat');
+    if(p.get('lon')) document.getElementById('iLon').value = p.get('lon');
+    if(p.get('tz')) document.getElementById('iTz').value = p.get('tz');
+  }
+  if(p.get('proxy')) document.getElementById('iProxy').value = p.get('proxy');
+  if(p.get('mode')) document.getElementById('iMode').value = p.get('mode');
+}
+
+function shareLink(){
+  const inp = readInput();
+  const p = new URLSearchParams();
+  p.set('name', inp.name); p.set('gender', inp.gender);
+  p.set('date', inp.dateStr); p.set('time', inp.timeStr);
+  p.set('lat', inp.lat); p.set('lon', inp.lon); p.set('tz', inp.tz);
+  const proxy = document.getElementById('iProxy').value;
+  if(proxy) p.set('proxy', proxy);
+  p.set('mode', document.getElementById('iMode').value);
+  const url = location.origin + location.pathname + '?' + p.toString();
+  navigator.clipboard.writeText(url).then(()=>{
+    alert('✓ Shareable URL copied to clipboard:\n\n'+url);
+  }).catch(()=>{ prompt('Copy this shareable URL:', url); });
+}
+
+function exportJson(){
+  const blob = new Blob([JSON.stringify(STATE, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `kundli-${STATE.input.name.replace(/\s+/g,'_')}.json`;
+  a.click(); URL.revokeObjectURL(url);
+}
+
+function readInput(){
+  const name=document.getElementById('iName').value;
+  const gender=document.getElementById('iGender').value;
+  const dateStr=document.getElementById('iDate').value;
+  const timeStr=document.getElementById('iTime').value;
+  const lat=parseFloat(document.getElementById('iLat').value);
+  const lon=parseFloat(document.getElementById('iLon').value);
+  const tz=parseFloat(document.getElementById('iTz').value);
+  const placeName = document.getElementById('iPlaceSearch').value;
+  const bhavSys = document.getElementById('iBhavSys').value;
+  const [Y,M,D]=dateStr.split('-').map(Number);
+  const [hh,mm,ss]=timeStr.split(':').map(Number);
+  const utH = hh+mm/60+(ss||0)/3600 - tz;
+  const JD = julianDay(Y,M,D,utH);
+  const birthDate = new Date(Date.UTC(Y,M-1,D,hh,mm,ss||0));
+  birthDate.setTime(birthDate.getTime()-tz*3600*1000);
+  return {name,gender,dateStr,timeStr,placeName,lat,lon,tz,JD,birthDate,Y,M,D,hh,mm,ss:(ss||0),bhavSys};
+}
+
+async function compute(){
+  const inp = readInput();
+  const apiKey = document.getElementById('iApiKey').value;
+  const mode = document.getElementById('iMode').value;
+  const proxy = document.getElementById('iProxy').value.trim();
+
+  STATE.input = inp;
+  STATE.local = computeLocal(inp);
+
+  setStatus('loading');
+  if(mode==='local'){
+    STATE.results = null; STATE.status='local-only';
+    renderAll(); setStatus('local-only'); return;
+  }
+
+  try {
+    const birthData = {
+      year:inp.Y, month:inp.M, date:inp.D, hours:inp.hh, minutes:inp.mm, seconds:inp.ss,
+      latitude:inp.lat, longitude:inp.lon, timezone:inp.tz
+    };
+    const results = await fetchAllCharts(birthData, apiKey, proxy);
+    STATE.results = results;
+    const okCount = results.filter(r=>r.ok).length;
+    STATE.status = okCount===results.length ? 'api-success' : (okCount>0 ? 'api-partial' : 'api-failed');
+  } catch(e){
+    STATE.results = null; STATE.status='api-failed'; STATE.error=e.message;
+  }
+  renderAll(); setStatus(STATE.status);
+}
+
+function computeLocal(inp){
+  const {JD, lat, lon, birthDate, bhavSys} = inp;
+  const ayan = lahiriAyanamsa(JD);
+  const ayanKP = kpAyanamsa(JD);
+  const sayana = {}, nirayana = {}, kp = {};
+  for(const p of PLANET_ORDER){
+    const g = planetGeoLocal(p, JD);
+    sayana[p] = g;
+    nirayana[p] = { lon: norm360(g.lon-ayan), retro:g.retro };
+    kp[p] = { lon: norm360(g.lon-ayanKP), retro:g.retro };
+  }
+  const ascS = ascendantLocal(JD,lat,lon);
+  const mcS = mcLocal(JD,lon);
+  // Use selected Bhav system for tropical cusps, then convert to nirayana/KP
+  const cuspsT = bhavCusps(JD, lat, lon, bhavSys || 'sripati');
+  // KP always uses Placidus regardless of dashboard selection
+  const cuspsPlacidus = placidusHouses(JD, lat, lon);
+  const tithi = getTithi(nirayana.sun.lon, nirayana.moon.lon);
+  const yoga = getYoga(nirayana.sun.lon, nirayana.moon.lon);
+  const karana = getKarana(nirayana.sun.lon, nirayana.moon.lon);
+  const ss = sunriseSunsetLocal(JD,lat,lon);
+  const ssLocal = { sunrise:hoursToHMS(parseHMS(ss.sunrise)+inp.tz), sunset:hoursToHMS(parseHMS(ss.sunset)+inp.tz) };
+  const dasha = vimshottariDashas(nirayana.moon.lon, birthDate);
+  return {
+    ayan, ayanKP, sayana, nirayana, kp,
+    ascSayana:ascS, ascNirayana:norm360(ascS-ayan), ascKP:norm360(ascS-ayanKP),
+    mcSayana:mcS, cuspsTropical:cuspsT,
+    cuspsNirayana:cuspsT.map(c=>norm360(c-ayan)),
+    cuspsKP:cuspsPlacidus.map(c=>norm360(c-ayanKP)),
+    bhavSystem: bhavSys || 'sripati',
+    tithi, yoga, karana, ssLocal, dasha,
+    vikram:inp.Y+57, shaka:inp.Y-78
+  };
+}
+
+/* ============ Status ============ */
+function setStatus(s){
+  const bar = document.getElementById('statusBar');
+  let html = '';
+  if(s==='loading') html += '<span class="pill pill-loading">⏳ Computing</span>';
+  else if(s==='api-success') html += '<span class="pill pill-api">✓ API Live</span>';
+  else if(s==='api-partial') html += '<span class="pill pill-api">⚠ API Partial</span><span class="pill pill-local">+ Local Fallback</span>';
+  else if(s==='api-failed') html += '<span class="pill pill-warn">⚠ API Blocked (CORS)</span><span class="pill pill-local">💻 Local Engine</span>';
+  else if(s==='local-only') html += '<span class="pill pill-local">💻 Local Mode</span>';
+  if(STATE.results){
+    for(const r of STATE.results){
+      const okPill = r.ok?'pill-api':'pill-warn';
+      html += `<span class="pill ${okPill}" title="POST /${r.endpoint}">${r.ok?'✓':'✗'} ${r.name}</span>`;
+    }
+  }
+  bar.innerHTML = html;
+}
+
+/* ============ Identity Strip ============ */
+function renderIdentity(){
+  const S = STATE.input;
+  const wd = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][new Date(S.dateStr).getDay()];
+  document.getElementById('identityStrip').innerHTML = `
+    <div class="item"><span>Native</span><span>${S.name}</span></div>
+    <div class="item"><span>Gender</span><span>${S.gender}</span></div>
+    <div class="item"><span>Date of Birth</span><span>${S.dateStr} · ${wd}</span></div>
+    <div class="item"><span>Time of Birth</span><span>${S.timeStr}</span></div>
+    <div class="item"><span>Place</span><span>${S.placeName}</span></div>
+    <div class="item"><span>Coordinates</span><span>${S.lat.toFixed(2)}°N · ${S.lon.toFixed(2)}°E</span></div>
+  `;
+}
+
+/* ============ Renderers ============ */
+function renderAll(){
+  renderIdentity();
+  renderCharts();
+  renderBasic();
+  renderNirayana();
+  renderSayana();
+  renderKP();
+  renderBhav();
+  renderVargas();
+  renderDasha();
+  renderRaw();
+}
+
+function renderCharts(){
+  const L = STATE.local;
+  const apiNir = getApiPlanets('nirayana');
+  const apiSay = getApiPlanets('sayana');
+  const positions = apiNir || L.nirayana;
+  const sayPos = apiSay || L.sayana;
+  const ascN = apiNir?.asc?.fullDeg ?? L.ascNirayana;
+  const ascS = apiSay?.asc?.fullDeg ?? L.ascSayana;
+  const moonN = positions.moon?.fullDeg ?? positions.moon?.lon;
+
+  const lagSvg = getApiSvg('lagna_svg');
+  const navSvg = getApiSvg('navamsa_svg');
+
+  document.getElementById('chartsGrid').innerHTML = `
+    <div class="chart-card">
+      <span class="chart-tag">NIRAYANA</span>
+      <div class="chart-title">लग्न कुंडली · Rasi (D-1)</div>
+      <div class="chart-sub">Lahiri Sidereal Lagna Chart</div>
+      ${lagSvg || drawNorthChart(positions, ascN)}
+    </div>
+    <div class="chart-card">
+      <span class="chart-tag navamsa">D-9</span>
+      <div class="chart-title">नवमांश · Navamsa</div>
+      <div class="chart-sub">Marriage, Dharma & Inner Strength</div>
+      ${navSvg || drawNorthChart(navamsaPositions(positions), navamsaLagna(ascN))}
+    </div>
+    <div class="chart-card">
+      <span class="chart-tag sayana">SAYANA</span>
+      <div class="chart-title">सायन · Tropical</div>
+      <div class="chart-sub">Western (Tropical) Chart</div>
+      ${drawNorthChart(sayPos, ascS)}
+    </div>
+    <div class="chart-card">
+      <span class="chart-tag kp">KP</span>
+      <div class="chart-title">KP कुंडली · Krishnamurti</div>
+      <div class="chart-sub">Sub-lord based Sidereal</div>
+      ${drawNorthChart(L.kp, L.ascKP)}
+    </div>
+    <div class="chart-card">
+      <span class="chart-tag bhav">BHAV</span>
+      <div class="chart-title">भाव चलित · Bhav Chalit</div>
+      <div class="chart-sub">Placidus House Placement</div>
+      ${drawBhavChalit(L.nirayana, L.cuspsNirayana)}
+    </div>
+    <div class="chart-card">
+      <span class="chart-tag">CHANDRA</span>
+      <div class="chart-title">चन्द्र कुंडली · Moon Chart</div>
+      <div class="chart-sub">Janma Rashi as Lagna</div>
+      ${drawNorthChart(positions, moonN)}
+    </div>
+  `;
+}
+
+function renderBasic(){
+  const S = STATE.input, L = STATE.local;
+  const apiNir = getApiPlanets('nirayana');
+  const ascLon = apiNir?.asc?.fullDeg ?? L.ascNirayana;
+  const moonLon = apiNir?.moon?.fullDeg ?? L.nirayana.moon.lon;
+  const ascR = rashiOf(ascLon), ascN = nakshatraOf(ascLon);
+  const moonR = rashiOf(moonLon), moonN = nakshatraOf(moonLon);
+
+  document.getElementById('basicDetails').innerHTML = `
+    <div class="details-grid">
+      <div class="detail-card">
+        <h4>🪔 Lagna · Ascendant</h4>
+        <div class="detail-row"><span>Rashi</span><span class="devanagari">${RASHIS[ascR]} · ${RASHIS_EN[ascR]}</span></div>
+        <div class="detail-row"><span>Degree</span><span>${dmsString(degInRashi(ascLon))}</span></div>
+        <div class="detail-row"><span>Nakshatra</span><span class="devanagari">${ascN.name} · पाद ${ascN.pada}</span></div>
+        <div class="detail-row"><span>Rashi Lord</span><span class="devanagari">${RASHI_LORDS[ascR]}</span></div>
+        <div class="detail-row"><span>Nakshatra Lord</span><span class="devanagari">${ascN.lord}</span></div>
+      </div>
+      <div class="detail-card">
+        <h4>🌙 Janma Rashi · Moon</h4>
+        <div class="detail-row"><span>Rashi</span><span class="devanagari">${RASHIS[moonR]} · ${RASHIS_EN[moonR]}</span></div>
+        <div class="detail-row"><span>Degree</span><span>${dmsString(degInRashi(moonLon))}</span></div>
+        <div class="detail-row"><span>Nakshatra</span><span class="devanagari">${moonN.name} · पाद ${moonN.pada}</span></div>
+        <div class="detail-row"><span>Rashi Lord</span><span class="devanagari">${RASHI_LORDS[moonR]}</span></div>
+        <div class="detail-row"><span>Nakshatra Lord</span><span class="devanagari">${moonN.lord}</span></div>
+      </div>
+      <div class="detail-card">
+        <h4>📜 Panchang</h4>
+        <div class="detail-row"><span>Tithi</span><span class="devanagari">${L.tithi.name}</span></div>
+        <div class="detail-row"><span>Paksha</span><span class="devanagari">${L.tithi.paksha}</span></div>
+        <div class="detail-row"><span>Yoga</span><span class="devanagari">${L.yoga}</span></div>
+        <div class="detail-row"><span>Karana</span><span class="devanagari">${L.karana}</span></div>
+        <div class="detail-row"><span>Vaar</span><span>${['रवि','सोम','मंगल','बुध','गुरू','शुक्र','शनि'][new Date(S.dateStr).getDay()]}वार</span></div>
+      </div>
+      <div class="detail-card">
+        <h4>☀ Sunrise / Sunset</h4>
+        <div class="detail-row"><span>Sunrise (Local)</span><span>${L.ssLocal.sunrise}</span></div>
+        <div class="detail-row"><span>Sunset (Local)</span><span>${L.ssLocal.sunset}</span></div>
+        <div class="detail-row"><span>Day Length</span><span>${dmsString(parseHMS(L.ssLocal.sunset)-parseHMS(L.ssLocal.sunrise))}</span></div>
+        <div class="detail-row"><span>Julian Day</span><span>${S.JD.toFixed(4)}</span></div>
+        <div class="detail-row"><span>Observation</span><span>topocentric</span></div>
+      </div>
+      <div class="detail-card">
+        <h4>🌐 Geographic</h4>
+        <div class="detail-row"><span>Latitude</span><span>${S.lat.toFixed(4)}° N</span></div>
+        <div class="detail-row"><span>Longitude</span><span>${S.lon.toFixed(4)}° E</span></div>
+        <div class="detail-row"><span>Standard Meridian</span><span>${(S.tz*15).toFixed(2)}° E</span></div>
+        <div class="detail-row"><span>Time Zone</span><span>UTC + ${S.tz}</span></div>
+        <div class="detail-row"><span>LMT Correction</span><span>${dmsString((S.tz*15-S.lon)/15)}</span></div>
+      </div>
+      <div class="detail-card">
+        <h4>📿 Era · Samvat</h4>
+        <div class="detail-row"><span>Vikram Samvat</span><span>${L.vikram}-${L.vikram+1}</span></div>
+        <div class="detail-row"><span>Shalivahana Shaka</span><span>${L.shaka}-${L.shaka+1}</span></div>
+        <div class="detail-row"><span>Lahiri Ayanamsa</span><span>${dmsString(L.ayan)}</span></div>
+        <div class="detail-row"><span>KP Ayanamsa</span><span>${dmsString(L.ayanKP)}</span></div>
+        <div class="detail-row"><span>Gregorian</span><span>${S.dateStr}</span></div>
+      </div>
+      <div class="detail-card">
+        <h4>⏳ Dasha at Birth</h4>
+        <div class="detail-row"><span>Maha Dasha</span><span class="devanagari">${L.dasha.balanceLord}</span></div>
+        <div class="detail-row"><span>Balance</span><span>${L.dasha.balance.toFixed(4)} वर्ष</span></div>
+        <div class="detail-row"><span>Years</span><span>${Math.floor(L.dasha.balance)}</span></div>
+        <div class="detail-row"><span>Months</span><span>${Math.floor((L.dasha.balance%1)*12)}</span></div>
+        <div class="detail-row"><span>Days</span><span>${Math.floor((((L.dasha.balance%1)*12)%1)*30)}</span></div>
+      </div>
+    </div>
+  `;
+}
+
+function buildPlanetTable(positions, ascLon){
+  let rows = '';
+  if(ascLon !== undefined){
+    const r = rashiOf(ascLon), n = nakshatraOf(ascLon);
+    rows += `<tr><td><b>लग्न</b></td><td class="devanagari">${RASHIS[r]}</td><td>${RASHIS_EN[r]}</td><td class="mono">${dmsString(degInRashi(ascLon))}</td><td class="center">—</td><td class="devanagari">${n.name}</td><td class="center">${n.pada}</td><td class="devanagari">${RASHI_LORDS[r]}</td><td class="devanagari">${n.lord}</td></tr>`;
+  }
+  for(const p of PLANET_ORDER){
+    const pos = positions[p]; if(!pos) continue;
+    const lon = pos.fullDeg ?? pos.lon;
+    const r = rashiOf(lon), n = nakshatraOf(lon);
+    rows += `<tr>
+      <td><b class="devanagari">${PLANETS_HI[p]}</b> <small style="color:var(--ink-soft)">${PLANETS_EN[p]}</small></td>
+      <td class="devanagari">${RASHIS[r]}</td>
+      <td>${RASHIS_EN[r]}</td>
+      <td class="mono">${dmsString(degInRashi(lon))}</td>
+      <td class="center">${pos.retro?'<span class="tag tag-retro">R</span>':'<span class="tag tag-direct">D</span>'}</td>
+      <td class="devanagari">${n.name}</td>
+      <td class="center">${n.pada}</td>
+      <td class="devanagari">${RASHI_LORDS[r]}</td>
+      <td class="devanagari">${n.lord}</td>
+    </tr>`;
+  }
+  return `<table>
+    <thead><tr><th>Graha · ग्रह</th><th>Rashi</th><th>Sign</th><th>Degree</th><th>R/M</th><th>Nakshatra</th><th>Pada</th><th>Rashi Lord</th><th>Nak. Lord</th></tr></thead>
+    <tbody>${rows}</tbody>
+  </table>`;
+}
+
+function renderNirayana(){
+  const L = STATE.local;
+  const apiNir = getApiPlanets('nirayana');
+  const positions = apiNir || L.nirayana;
+  const ascLon = apiNir?.asc?.fullDeg ?? L.ascNirayana;
+
+  let cuspRows = '';
+  for(let i=0;i<12;i++){
+    const c=L.cuspsNirayana[i], r=rashiOf(c), n=nakshatraOf(c);
+    cuspRows += `<tr><td class="center"><b>${i+1}</b></td><td class="devanagari">${RASHIS[r]}</td><td class="mono">${dmsString(degInRashi(c))}</td><td class="devanagari">${n.name}</td><td class="center">${n.pada}</td><td class="devanagari">${RASHI_LORDS[r]}</td><td class="devanagari">${n.lord}</td></tr>`;
+  }
+  document.getElementById('nirayanaTable').innerHTML = `
+    <div class="note"><b>Lahiri Ayanamsa:</b> ${dmsString(L.ayan)} · Endpoint: <code>POST /planets</code> with <code>ayanamsha:'lahiri'</code> · ${apiNir?'<span class="pill pill-api">API DATA</span>':'<span class="pill pill-local">LOCAL ENGINE</span>'}</div>
+    ${buildPlanetTable(positions, ascLon)}
+    <div class="card" style="margin-top:14px;">
+      <h3>निरयण भाव स्पष्ट · Nirayana Bhava Cusps</h3>
+      <table>
+        <thead><tr><th>Bhava</th><th>Rashi</th><th>Degree</th><th>Nakshatra</th><th>Pada</th><th>Rashi Lord</th><th>Nak. Lord</th></tr></thead>
+        <tbody>${cuspRows}</tbody>
+      </table>
+    </div>
+  `;
+}
+
+function renderSayana(){
+  const L = STATE.local;
+  const apiSay = getApiPlanets('sayana');
+  const positions = apiSay || L.sayana;
+  const ascLon = apiSay?.asc?.fullDeg ?? L.ascSayana;
+
+  let html = `<div class="note"><b>Tropical Zodiac</b> · Endpoint: <code>POST /planets</code> with <code>ayanamsha:'sayana'</code> · ${apiSay?'<span class="pill pill-api">API DATA</span>':'<span class="pill pill-local">LOCAL ENGINE</span>'}</div>`;
+  html += buildPlanetTable(positions, ascLon);
+  // Aspects grid
+  html += `<div class="card"><h3>दृष्टि एवं ग्रह योग · Sayana Aspect Grid</h3>
+    <table style="font-size:10.5px;"><thead><tr><th></th>`;
+  for(const p of PLANET_ORDER) html += `<th class="center devanagari">${PLANETS_HI[p]}</th>`;
+  html += `</tr></thead><tbody>`;
+  for(let i=0;i<PLANET_ORDER.length;i++){
+    html += `<tr><td><b class="devanagari">${PLANETS_HI[PLANET_ORDER[i]]}</b></td>`;
+    for(let j=0;j<PLANET_ORDER.length;j++){
+      if(j<=i){ html+='<td class="aspect-cell">—</td>'; continue; }
+      const li = positions[PLANET_ORDER[i]]?.fullDeg ?? positions[PLANET_ORDER[i]]?.lon;
+      const lj = positions[PLANET_ORDER[j]]?.fullDeg ?? positions[PLANET_ORDER[j]]?.lon;
+      let diff = norm360(lj-li); if(diff>180) diff = 360-diff;
+      const asp = getAspect(diff);
+      html += `<td class="aspect-cell ${asp?'asp-'+asp:''}"><b>${Math.round(diff).toString().padStart(3,'0')}°</b>${asp?'<br>'+asp:''}</td>`;
+    }
+    html += '</tr>';
+  }
+  html += '</tbody></table></div>';
+  document.getElementById('sayanaTable').innerHTML = html;
+}
+
+function renderKP(){
+  const L = STATE.local;
+  const apiKp = getApiPlanets('kp');
+  const positions = apiKp || L.kp;
+  const ascLon = apiKp?.asc?.fullDeg ?? L.ascKP;
+
+  let rows = '';
+  const lagSub = kpSubLord(ascLon);
+  const lagR = rashiOf(ascLon), lagN = nakshatraOf(ascLon);
+  rows += `<tr><td><b>लग्न</b></td><td class="devanagari">${RASHIS[lagR]}</td><td class="mono">${dmsString(degInRashi(ascLon))}</td><td class="devanagari">${RASHI_LORDS[lagR]}</td><td class="devanagari">${lagN.name}-${lagN.pada}</td><td class="devanagari">${lagSub.star}</td><td class="devanagari"><b>${lagSub.sub}</b></td><td class="devanagari">${lagSub.subSub}</td><td class="devanagari">${lagSub.ssLord}</td></tr>`;
+  for(const p of PLANET_ORDER){
+    const pos = positions[p]; if(!pos) continue;
+    const lon = pos.fullDeg ?? pos.lon;
+    const r = rashiOf(lon), n = nakshatraOf(lon), sub = kpSubLord(lon);
+    rows += `<tr>
+      <td><b class="devanagari">${PLANETS_HI[p]}</b></td>
+      <td class="devanagari">${RASHIS[r]}</td>
+      <td class="mono">${dmsString(degInRashi(lon))} ${pos.retro?'<span class="tag tag-retro">R</span>':''}</td>
+      <td class="devanagari">${RASHI_LORDS[r]}</td>
+      <td class="devanagari">${n.name}-${n.pada}</td>
+      <td class="devanagari">${sub.star}</td>
+      <td class="devanagari"><b>${sub.sub}</b></td>
+      <td class="devanagari">${sub.subSub}</td>
+      <td class="devanagari">${sub.ssLord}</td>
+    </tr>`;
+  }
+  let cuspRows = '';
+  for(let i=0;i<12;i++){
+    const c=L.cuspsKP[i], r=rashiOf(c), n=nakshatraOf(c), sub=kpSubLord(c);
+    cuspRows += `<tr><td class="center"><b>${i+1}</b></td><td class="devanagari">${RASHIS[r]}</td><td class="mono">${dmsString(degInRashi(c))}</td><td class="devanagari">${RASHI_LORDS[r]}</td><td class="devanagari">${n.name}-${n.pada}</td><td class="devanagari">${sub.star}</td><td class="devanagari"><b>${sub.sub}</b></td><td class="devanagari">${sub.subSub}</td><td class="devanagari">${sub.ssLord}</td></tr>`;
+  }
+  document.getElementById('kpTable').innerHTML = `
+    <div class="note"><b>KP Ayanamsa:</b> ${dmsString(L.ayanKP)} · Endpoint: <code>POST /planets/extended</code> · ${apiKp?'<span class="pill pill-api">API EXTENDED</span>':'<span class="pill pill-local">LOCAL</span>'}</div>
+    <table>
+      <thead><tr><th>Graha</th><th>Rashi</th><th>Degree</th><th>Sign Lord</th><th>Nakshatra-Pada</th><th>Star Lord</th><th>Sub Lord</th><th>Sub-Sub</th><th>SS-Sub</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <div class="card">
+      <h3>Cuspal Sub Lords · 12 Houses (Placidus)</h3>
+      <table>
+        <thead><tr><th>Bhava</th><th>Rashi</th><th>Degree</th><th>Sign Lord</th><th>Nak-Pada</th><th>Star Lord</th><th>Sub Lord</th><th>Sub-Sub</th><th>SS-Sub</th></tr></thead>
+        <tbody>${cuspRows}</tbody>
+      </table>
+    </div>
+  `;
+}
+
+function renderBhav(){
+  const L = STATE.local;
+  const apiBhav = getApiPlanets('bhav_chalit');
+  const positions = apiBhav || L.nirayana;
+  let rows = '';
+  for(const p of PLANET_ORDER){
+    const pos = positions[p]; if(!pos) continue;
+    const lon = pos.fullDeg ?? pos.lon;
+    const r = rashiOf(lon), n = nakshatraOf(lon);
+    let house = 1;
+    for(let i=0;i<12;i++){
+      const c1=L.cuspsNirayana[i], c2=L.cuspsNirayana[(i+1)%12];
+      const inH = c2>c1 ? (lon>=c1&&lon<c2) : (lon>=c1||lon<c2);
+      if(inH){ house=i+1; break; }
+    }
+    rows += `<tr>
+      <td><b class="devanagari">${PLANETS_HI[p]}</b></td>
+      <td class="devanagari">${RASHIS[r]}</td>
+      <td class="mono">${dmsString(degInRashi(lon))}</td>
+      <td class="center"><b>${house}</b></td>
+      <td class="devanagari">${n.name}-${n.pada}</td>
+      <td class="center">${pos.retro?'<span class="tag tag-retro">R</span>':'<span class="tag tag-direct">D</span>'}</td>
+    </tr>`;
+  }
+  document.getElementById('bhavTable').innerHTML = `
+    <div class="note"><b>Bhav Chalit</b> shows the actual house each planet occupies based on Placidus cusps · ${apiBhav?'<span class="pill pill-api">API DATA</span>':'<span class="pill pill-local">LOCAL</span>'}</div>
+    <table>
+      <thead><tr><th>Graha</th><th>Rashi</th><th>Degree</th><th>Bhava (House)</th><th>Nakshatra-Pada</th><th>R/M</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+  `;
+}
+
+function renderVargas(){
+  const L = STATE.local;
+  const apiNir = getApiPlanets('nirayana');
+  const basePos = apiNir || L.nirayana;
+  const ascN = apiNir?.asc?.fullDeg ?? L.ascNirayana;
+  const divs = [
+    {tag:'D-1', name:'राशि · Rasi', sub:'Body & physical', n:1},
+    {tag:'D-2', name:'होरा · Hora', sub:'Wealth', n:2},
+    {tag:'D-3', name:'द्रेष्काण · Drekkana', sub:'Siblings', n:3},
+    {tag:'D-7', name:'सप्तमांश · Saptamsa', sub:'Children', n:7},
+    {tag:'D-9', name:'नवमांश · Navamsa', sub:'Marriage & Dharma', n:9},
+    {tag:'D-10', name:'दशमांश · Dasamsa', sub:'Career', n:10},
+    {tag:'D-12', name:'द्वादशांश · Dwadasamsa', sub:'Parents', n:12},
+    {tag:'D-16', name:'षोडशांश · Shodasamsa', sub:'Vehicles', n:16},
+    {tag:'D-20', name:'विंशांश · Vimsamsa', sub:'Spiritual', n:20},
+    {tag:'D-24', name:'चतुर्विंशांश · Chaturvimsamsa', sub:'Education', n:24},
+    {tag:'D-30', name:'त्रिंशांश · Trimsamsa', sub:'Misfortunes', n:30},
+    {tag:'D-60', name:'षष्ट्यांश · Shastiamsa', sub:'Past karma', n:60}
+  ];
+  let html = '';
+  for(const d of divs){
+    const pos = divisionalPositions(basePos, d.n);
+    const asc = divisionalLongitude(ascN, d.n);
+    html += `<div class="chart-card">
+      <span class="chart-tag">${d.tag}</span>
+      <div class="chart-title">${d.name}</div>
+      <div class="chart-sub">${d.sub}</div>
+      ${drawNorthChart(pos, asc)}
+    </div>`;
+  }
+  document.getElementById('vargasGrid').innerHTML = html;
+}
+
+function navamsaLagna(lon){
+  const r=rashiOf(lon), inSign=degInRashi(lon), navIdx=Math.floor(inSign/(30/9));
+  let start;
+  if(r%3===0) start=r;
+  else if(r%3===1) start=(r+8)%12;
+  else start=(r+4)%12;
+  return (start+navIdx)*30 + (inSign%(30/9))*9;
+}
+function navamsaPositions(pos){
+  const out={};
+  for(const p of PLANET_ORDER){
+    const lon=pos[p]?.fullDeg ?? pos[p]?.lon;
+    if(lon!==undefined) out[p]={lon:navamsaLagna(lon), retro:pos[p].retro};
+  }
+  return out;
+}
+function divisionalLongitude(lon,n){
+  if(n===1) return lon;
+  if(n===9) return navamsaLagna(lon);
+  const r=rashiOf(lon), inSign=degInRashi(lon), idx=Math.floor(inSign/(30/n));
+  let start;
+  if(n===2){ start=(r%2===0)?(idx===0?4:3):(idx===0?3:4); return start*30+(inSign*n)%30; }
+  if(n===3){ start=(r+idx*4)%12; return start*30+(inSign%10)*3; }
+  start=(r+idx)%12;
+  return start*30+(inSign*n)%30;
+}
+function divisionalPositions(pos,n){
+  const out={};
+  for(const p of PLANET_ORDER){
+    const lon=pos[p]?.fullDeg ?? pos[p]?.lon;
+    if(lon!==undefined) out[p]={lon:divisionalLongitude(lon,n), retro:pos[p].retro};
+  }
+  return out;
+}
+
+function renderDasha(){
+  const L = STATE.local;
+  let html = `<div class="note"><b>Vimshottari 120-year cycle</b> · Birth Mahadasha: <span class="devanagari"><b>${L.dasha.balanceLord}</b></span> · Balance at birth: <b>${L.dasha.balance.toFixed(4)} वर्ष</b></div>`;
+  for(const d of L.dasha.dashas){
+    html += `<div class="dasha-block">
+      <div class="dasha-head" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+        <span><span class="arrow">▸</span> <span class="devanagari"><b>${d.lord}</b></span> Mahadasha · ${d.yrs} वर्ष</span>
+        <span class="mono" style="color:var(--ink-soft);">${fmtDate(d.start)} → ${fmtDate(d.end)}</span>
+      </div>
+      <div class="dasha-body">`;
+    for(const a of d.antars){
+      html += `<details style="margin:4px 0 4px 12px; padding:4px 8px; border-left:2px solid var(--gold);">
+        <summary><span class="devanagari">${d.lord}-${a.lord}</span> Antardasha <span class="mono" style="color:var(--ink-soft);font-weight:400;">(${fmtDate(a.start)} → ${fmtDate(a.end)})</span></summary>
+        <div style="font-size:11px; padding:6px 12px;">`;
+      for(const p of a.prats){
+        html += `<div style="display:flex; justify-content:space-between; padding:2px 0; border-bottom:1px dotted var(--line);">
+          <span class="devanagari">${d.lord}-${a.lord}-${p.lord}</span>
+          <span class="mono" style="color:var(--ink-soft);">${fmtDate(p.start)} → ${fmtDate(p.end)}</span>
+        </div>`;
+      }
+      html += `</div></details>`;
+    }
+    html += `</div></div>`;
+  }
+  document.getElementById('dashaTable').innerHTML = html;
+}
+
+function renderRaw(){
+  let html = '';
+  if(!STATE.results){
+    html += `<div class="note error">No API results — running in local-only or all endpoints blocked. ${STATE.error?'<br>Error: '+STATE.error:''}<br><br><b>Fix:</b> Run the included <code>kundli_proxy.py</code> sidecar to bypass CORS, then put <code>http://localhost:8787</code> in the Proxy URL field.</div>`;
+  } else {
+    for(const r of STATE.results){
+      html += `<details><summary>${r.ok?'✓':'✗'} <b>${r.name}</b> — POST /${r.endpoint} (${r.ayan}) — ${r.ok?'200 OK':'Error '+(r.status||'CORS')}</summary>
+        <div class="raw-json">${JSON.stringify(r.ok?r.data:r.error, null, 2).slice(0, 4000)}</div></details>`;
+    }
+  }
+  document.getElementById('rawApi').innerHTML = html;
+}
+
+/* ============ Diamond Chart Drawing ============ */
+function drawNorthChart(positions, ascLon){
+  const ascR = rashiOf(ascLon);
+  const houses = Array.from({length:12},()=>[]);
+  for(const p of PLANET_ORDER){
+    const lon = positions[p]?.fullDeg ?? positions[p]?.lon;
+    if(lon===undefined) continue;
+    const r = rashiOf(lon);
+    const h = ((r-ascR+12)%12);
+    houses[h].push(PLANETS_HI[p].substring(0,3));
+  }
+  const signs = Array.from({length:12},(_,i)=>(ascR+i)%12+1);
+  const centers = [
+    {x:200,y:115,num:{x:200,y:75}},   {x:120,y:80,num:{x:80,y:55}},
+    {x:80,y:120,num:{x:40,y:100}},    {x:120,y:200,num:{x:80,y:200}},
+    {x:80,y:280,num:{x:40,y:300}},    {x:120,y:320,num:{x:80,y:345}},
+    {x:200,y:285,num:{x:200,y:325}},  {x:280,y:320,num:{x:320,y:345}},
+    {x:320,y:280,num:{x:360,y:300}},  {x:280,y:200,num:{x:320,y:200}},
+    {x:320,y:120,num:{x:360,y:100}},  {x:280,y:80,num:{x:320,y:55}}
+  ];
+  let labels = '';
+  for(let i=0;i<12;i++){
+    const c = centers[i];
+    labels += `<text x="${c.num.x}" y="${c.num.y}" class="house-num" text-anchor="middle">${signs[i]}</text>`;
+    houses[i].forEach((pl,idx)=>{
+      labels += `<text x="${c.x}" y="${c.y+idx*12-(houses[i].length-1)*6}" class="planet-label" text-anchor="middle">${pl}</text>`;
+    });
+  }
+  labels += `<text x="200" y="135" class="lagna-mark" text-anchor="middle">लग्न</text>`;
+  return `<svg viewBox="0 0 400 400" class="chart-svg" xmlns="http://www.w3.org/2000/svg">
+    <rect x="0" y="0" width="400" height="400" fill="#fdfaf2"/>
+    <rect x="10" y="10" width="380" height="380" fill="none" stroke="#7a1f1f" stroke-width="2"/>
+    <line x1="10" y1="10" x2="390" y2="390" stroke="#7a1f1f" stroke-width="1.5"/>
+    <line x1="390" y1="10" x2="10" y2="390" stroke="#7a1f1f" stroke-width="1.5"/>
+    <polygon points="200,10 390,200 200,390 10,200" fill="none" stroke="#7a1f1f" stroke-width="1.5"/>
+    ${labels}
+  </svg>`;
+}
+
+function drawBhavChalit(positions, cusps){
+  const ascR = rashiOf(cusps[0]);
+  const houses = Array.from({length:12},()=>[]);
+  for(const p of PLANET_ORDER){
+    const lon = positions[p]?.fullDeg ?? positions[p]?.lon;
+    if(lon===undefined) continue;
+    let placed=false;
+    for(let i=0;i<12;i++){
+      const c1=cusps[i], c2=cusps[(i+1)%12];
+      const inH = c2>c1 ? (lon>=c1&&lon<c2) : (lon>=c1||lon<c2);
+      if(inH){ houses[i].push(PLANETS_HI[p].substring(0,3)); placed=true; break; }
+    }
+    if(!placed) houses[0].push(PLANETS_HI[p].substring(0,3));
+  }
+  const signs = Array.from({length:12},(_,i)=>(ascR+i)%12+1);
+  const centers = [
+    {x:200,y:115,num:{x:200,y:75}},   {x:120,y:80,num:{x:80,y:55}},
+    {x:80,y:120,num:{x:40,y:100}},    {x:120,y:200,num:{x:80,y:200}},
+    {x:80,y:280,num:{x:40,y:300}},    {x:120,y:320,num:{x:80,y:345}},
+    {x:200,y:285,num:{x:200,y:325}},  {x:280,y:320,num:{x:320,y:345}},
+    {x:320,y:280,num:{x:360,y:300}},  {x:280,y:200,num:{x:320,y:200}},
+    {x:320,y:120,num:{x:360,y:100}},  {x:280,y:80,num:{x:320,y:55}}
+  ];
+  let labels = '';
+  for(let i=0;i<12;i++){
+    const c = centers[i];
+    labels += `<text x="${c.num.x}" y="${c.num.y}" class="house-num" text-anchor="middle">${signs[i]}</text>`;
+    houses[i].forEach((pl,idx)=>{
+      labels += `<text x="${c.x}" y="${c.y+idx*12-(houses[i].length-1)*6}" class="planet-label" text-anchor="middle">${pl}</text>`;
+    });
+  }
+  return `<svg viewBox="0 0 400 400" class="chart-svg" xmlns="http://www.w3.org/2000/svg">
+    <rect x="0" y="0" width="400" height="400" fill="#fdfaf2"/>
+    <rect x="10" y="10" width="380" height="380" fill="none" stroke="#4a6741" stroke-width="2"/>
+    <line x1="10" y1="10" x2="390" y2="390" stroke="#4a6741" stroke-width="1.5"/>
+    <line x1="390" y1="10" x2="10" y2="390" stroke="#4a6741" stroke-width="1.5"/>
+    <polygon points="200,10 390,200 200,390 10,200" fill="none" stroke="#4a6741" stroke-width="1.5"/>
+    ${labels}
+  </svg>`;
+}
+
+/* ============ Place autocomplete (11,050 cities) ============ */
+let PLACES = null;
+async function loadPlaces(){
+  if(PLACES) return PLACES;
+  // Try same-origin places.json first (when served via proxy), fall back to embedded fallback
+  try {
+    const r = await fetch('places.json');
+    if(r.ok){ PLACES = await r.json(); return PLACES; }
+  } catch(e) {}
+  // Embedded fallback: top 60 Indian + world cities
+  PLACES = [
+    {n:'Delhi (Delhi)',la:28.6139,lo:77.2090,tz:5.5,c:'India'},
+    {n:'Mumbai (Maharashtra)',la:19.0760,lo:72.8777,tz:5.5,c:'India'},
+    {n:'Bangalore (Karnataka)',la:12.9716,lo:77.5946,tz:5.5,c:'India'},
+    {n:'Hyderabad (Andra Pradesh)',la:17.3667,lo:78.4333,tz:5.5,c:'India'},
+    {n:'Chennai (Tamil Nadu)',la:13.0827,lo:80.2707,tz:5.5,c:'India'},
+    {n:'Kolkata (West Bengal)',la:22.5726,lo:88.3639,tz:5.5,c:'India'},
+    {n:'Pune (Maharashtra)',la:18.5204,lo:73.8567,tz:5.5,c:'India'},
+    {n:'Ahmedabad (Gujarat)',la:23.0225,lo:72.5714,tz:5.5,c:'India'},
+    {n:'Jaipur (Rajasthan)',la:26.9124,lo:75.7873,tz:5.5,c:'India'},
+    {n:'Lucknow (UP)',la:26.8467,lo:80.9462,tz:5.5,c:'India'},
+    {n:'Patna (Bihar)',la:25.5941,lo:85.1376,tz:5.5,c:'India'},
+    {n:'Chandigarh',la:30.7333,lo:76.7794,tz:5.5,c:'India'},
+    {n:'Nagpur (Maharashtra)',la:21.1458,lo:79.0882,tz:5.5,c:'India'},
+    {n:'Indore (MP)',la:22.7196,lo:75.8577,tz:5.5,c:'India'},
+    {n:'Bhopal (MP)',la:23.2599,lo:77.4126,tz:5.5,c:'India'},
+    {n:'Surat (Gujarat)',la:21.1702,lo:72.8311,tz:5.5,c:'India'},
+    {n:'Kanpur (UP)',la:26.4499,lo:80.3319,tz:5.5,c:'India'},
+    {n:'Agra (UP)',la:27.1767,lo:78.0081,tz:5.5,c:'India'},
+    {n:'Varanasi (UP)',la:25.3176,lo:82.9739,tz:5.5,c:'India'},
+    {n:'Amritsar (Punjab)',la:31.6340,lo:74.8723,tz:5.5,c:'India'},
+    {n:'Vadodara (Gujarat)',la:22.3072,lo:73.1812,tz:5.5,c:'India'},
+    {n:'Rajkot (Gujarat)',la:22.3039,lo:70.8022,tz:5.5,c:'India'},
+    {n:'Coimbatore (Tamil Nadu)',la:11.0168,lo:76.9558,tz:5.5,c:'India'},
+    {n:'Madurai (Tamil Nadu)',la:9.9252,lo:78.1198,tz:5.5,c:'India'},
+    {n:'Kochi (Kerala)',la:9.9312,lo:76.2673,tz:5.5,c:'India'},
+    {n:'Thiruvananthapuram (Kerala)',la:8.5241,lo:76.9366,tz:5.5,c:'India'},
+    {n:'Mysore (Karnataka)',la:12.2958,lo:76.6394,tz:5.5,c:'India'},
+    {n:'Mangalore (Karnataka)',la:12.9141,lo:74.8560,tz:5.5,c:'India'},
+    {n:'Vijayawada (AP)',la:16.5062,lo:80.6480,tz:5.5,c:'India'},
+    {n:'Visakhapatnam (AP)',la:17.6868,lo:83.2185,tz:5.5,c:'India'},
+    {n:'Bhubaneswar (Odisha)',la:20.2961,lo:85.8245,tz:5.5,c:'India'},
+    {n:'Guwahati (Assam)',la:26.1445,lo:91.7362,tz:5.5,c:'India'},
+    {n:'Ranchi (Jharkhand)',la:23.3441,lo:85.3096,tz:5.5,c:'India'},
+    {n:'Jamshedpur (Jharkhand)',la:22.8046,lo:86.2029,tz:5.5,c:'India'},
+    {n:'Raipur (Chhattisgarh)',la:21.2514,lo:81.6296,tz:5.5,c:'India'},
+    {n:'Dehradun (Uttarakhand)',la:30.3165,lo:78.0322,tz:5.5,c:'India'},
+    {n:'Haridwar (Uttarakhand)',la:29.9457,lo:78.1642,tz:5.5,c:'India'},
+    {n:'Shimla (HP)',la:31.1048,lo:77.1734,tz:5.5,c:'India'},
+    {n:'Srinagar (J&K)',la:34.0837,lo:74.7973,tz:5.5,c:'India'},
+    {n:'Jammu (J&K)',la:32.7266,lo:74.8570,tz:5.5,c:'India'},
+    {n:'Panaji (Goa)',la:15.4909,lo:73.8278,tz:5.5,c:'India'},
+    {n:'Gurgaon (Haryana)',la:28.4595,lo:77.0266,tz:5.5,c:'India'},
+    {n:'Noida (UP)',la:28.5355,lo:77.3910,tz:5.5,c:'India'},
+    {n:'Jodhpur (Rajasthan)',la:26.2389,lo:73.0243,tz:5.5,c:'India'},
+    {n:'Udaipur (Rajasthan)',la:24.5854,lo:73.7125,tz:5.5,c:'India'},
+    {n:'New York, USA',la:40.7128,lo:-74.0060,tz:-5,c:'USA'},
+    {n:'Los Angeles, USA',la:34.0522,lo:-118.2437,tz:-8,c:'USA'},
+    {n:'London, UK',la:51.5074,lo:-0.1278,tz:0,c:'UK'},
+    {n:'Dubai, UAE',la:25.2048,lo:55.2708,tz:4,c:'UAE'},
+    {n:'Singapore',la:1.3521,lo:103.8198,tz:8,c:'Singapore'},
+    {n:'Sydney, Australia',la:-33.8688,lo:151.2093,tz:10,c:'Australia'},
+    {n:'Tokyo, Japan',la:35.6762,lo:139.6503,tz:9,c:'Japan'},
+    {n:'Kathmandu, Nepal',la:27.7172,lo:85.3240,tz:5.75,c:'Nepal'},
+    {n:'Colombo, Sri Lanka',la:6.9271,lo:79.8612,tz:5.5,c:'Sri Lanka'},
+    {n:'Dhaka, Bangladesh',la:23.8103,lo:90.4125,tz:6,c:'Bangladesh'},
+    {n:'Karachi, Pakistan',la:24.8607,lo:67.0011,tz:5,c:'Pakistan'},
+    {n:'Toronto, Canada',la:43.6532,lo:-79.3832,tz:-5,c:'Canada'},
+    {n:'San Francisco, USA',la:37.7749,lo:-122.4194,tz:-8,c:'USA'},
+    {n:'Chicago, USA',la:41.8781,lo:-87.6298,tz:-6,c:'USA'},
+    {n:'Hong Kong',la:22.3193,lo:114.1694,tz:8,c:'Hong Kong'}
+  ];
+  return PLACES;
+}
+
+function setupPlaceAutocomplete(){
+  const input = document.getElementById('iPlaceSearch');
+  const drop = document.getElementById('placeDrop');
+  const renderDrop = async (q) => {
+    const list = await loadPlaces();
+    if(!q || q.length < 2){ drop.style.display='none'; return; }
+    const ql = q.toLowerCase();
+    const matches = list.filter(p => p.n.toLowerCase().includes(ql)).slice(0, 30);
+    if(!matches.length){ drop.innerHTML='<div style="padding:8px;color:var(--ink-soft);">No matches</div>'; drop.style.display='block'; return; }
+    drop.innerHTML = matches.map(p =>
+      `<div class="place-opt" style="padding:6px 10px;cursor:pointer;border-bottom:1px solid var(--line-soft);font-size:12px;"
+            data-la="${p.la}" data-lo="${p.lo}" data-tz="${p.tz}" data-name="${p.n.replace(/"/g,'&quot;')}">
+        <b>${p.n}</b> <small style="color:var(--ink-soft);">· ${p.c} · ${p.la.toFixed(2)}, ${p.lo.toFixed(2)} · UTC${p.tz>=0?'+':''}${p.tz}</small>
+      </div>`
+    ).join('');
+    drop.style.display='block';
+    drop.querySelectorAll('.place-opt').forEach(el => {
+      el.addEventListener('click', () => {
+        input.value = el.dataset.name;
+        document.getElementById('iLat').value = el.dataset.la;
+        document.getElementById('iLon').value = el.dataset.lo;
+        document.getElementById('iTz').value = el.dataset.tz;
+        drop.style.display='none';
+      });
+      el.addEventListener('mouseenter', () => el.style.background='var(--paper-2)');
+      el.addEventListener('mouseleave', () => el.style.background='');
+    });
+  };
+  let to;
+  input.addEventListener('input', e => { clearTimeout(to); to = setTimeout(()=>renderDrop(e.target.value), 150); });
+  input.addEventListener('focus', e => { if(e.target.value.length>=2) renderDrop(e.target.value); });
+  document.addEventListener('click', e => {
+    if(!e.target.closest('#iPlaceSearch') && !e.target.closest('#placeDrop')) drop.style.display='none';
+  });
+}
+
+window.addEventListener('load', ()=>{
+  setupPlaceAutocomplete();
+  loadFromUrl();
+  compute();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: kundli-pro-max
+    runtime: python
+    plan: free
+    buildCommand: "echo 'No build needed — standard library only'"
+    startCommand: "python3 server.py"
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: PYTHON_VERSION
+        value: 3.11.0
