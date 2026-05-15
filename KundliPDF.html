@@ -137,65 +137,77 @@ input:focus, select:focus{
 .id-strip .field span:first-child{color:var(--maroon); font-weight:700; font-size:7px; text-transform:uppercase; letter-spacing:0.5px;}
 .id-strip .field span:last-child{font-weight:600; color:var(--ink); font-size:9px;}
 
-/* Landscape layout: 5 charts in a horizontal row */
+/* Parashara photo layout: 3 rows × 2 cols on landscape A4 */
 .pdf-charts{
   display:grid;
-  grid-template-columns:repeat(5,1fr);
-  gap:5px; margin-bottom:7px;
+  grid-template-columns:repeat(2,1fr);
+  grid-template-rows:repeat(3,1fr);
+  gap:5px; margin-bottom:5px;
+  height:155mm;            /* uses most of landscape height */
 }
 .pdf-chart{
-  border:1px solid var(--maroon); border-radius:4px; padding:4px 5px;
+  border:1.2px solid var(--maroon); border-radius:4px; padding:4px 6px;
   background:#fdfaf2;
+  display:flex; flex-direction:column;
+  overflow:hidden;
 }
 .pdf-chart .label{
-  font-family:'Cormorant Garamond',serif; font-size:10px;
+  font-family:'Cormorant Garamond',serif; font-size:11px;
   font-weight:700; color:var(--maroon);
   border-bottom:1px solid var(--gold); padding-bottom:2px;
   margin-bottom:3px; letter-spacing:0.2px;
   display:flex; justify-content:space-between; align-items:center;
+  flex-shrink:0;
 }
-.pdf-chart .label .main{font-size:10px;}
+.pdf-chart .label .main{font-size:11px;}
 .pdf-chart .label .tag{
-  font-size:7.5px; background:var(--maroon); color:#fff;
-  padding:1px 5px; border-radius:6px; font-weight:600;
+  font-size:8px; background:var(--maroon); color:#fff;
+  padding:1px 6px; border-radius:7px; font-weight:600;
   letter-spacing:0.3px;
 }
-.pdf-chart svg{width:100%; height:auto; display:block;}
+.pdf-chart .chart-wrap{
+  flex:1; display:flex; align-items:center; justify-content:center;
+  min-height:0;
+}
+.pdf-chart svg{height:100%; width:auto; max-width:100%; display:block;}
 
-/* 3-level Vimshottari dasha — Maha | Antar | Pratyantar columns */
-.dasha-3lvl{
-  display:grid; grid-template-columns:1fr 1fr 1.2fr;
-  gap:5px; margin-bottom:6px;
+/* 3-level Vimshottari in the 6th cell — Maha | Antar | Pratyantar mini-grid */
+.dasha-cell-3lvl{
+  display:grid; grid-template-columns:1fr 1fr 1.1fr;
+  gap:4px; flex:1; overflow:hidden;
 }
-.dasha-col{
-  border:1px solid var(--maroon); border-radius:4px;
-  padding:4px 5px; background:#fdfaf2;
+.dasha-mini{
+  border:1px solid var(--line); border-radius:3px;
+  padding:3px 4px; background:#fff;
+  font-size:7px; line-height:1.25;
+  overflow:hidden;
 }
-.dasha-col h4{
-  font-family:'Cormorant Garamond',serif; font-size:10px;
+.dasha-mini h5{
+  font-family:'Cormorant Garamond',serif; font-size:9px;
   color:var(--maroon); border-bottom:1px solid var(--gold);
-  padding-bottom:2px; margin-bottom:3px; letter-spacing:0.2px;
-  display:flex; justify-content:space-between;
+  padding-bottom:1px; margin-bottom:2px;
+  display:flex; justify-content:space-between; align-items:center;
 }
-.dasha-col h4 .tag{
-  font-size:7px; background:var(--maroon); color:#fff;
-  padding:1px 5px; border-radius:6px; font-weight:600;
+.dasha-mini h5 .tag{
+  font-size:6px; background:var(--maroon); color:#fff;
+  padding:0 4px; border-radius:5px; font-weight:600;
+  letter-spacing:0.3px;
 }
-.dasha-col h4 .tag.lvl2{background:var(--navy);}
-.dasha-col h4 .tag.lvl3{background:var(--sage);}
-.dasha-col .d-row{
+.dasha-mini h5 .tag.lvl2{background:var(--navy);}
+.dasha-mini h5 .tag.lvl3{background:var(--sage);}
+.dasha-mini .d-row{
   display:flex; justify-content:space-between;
-  padding:1px 0; font-size:7.5px;
+  padding:0.5px 0; font-size:7px;
   border-bottom:1px dotted var(--line-soft);
 }
-.dasha-col .d-row.current{
-  background:rgba(184,134,11,0.18); font-weight:700;
-  padding:1.5px 4px; margin:0 -2px; border-radius:2px;
+.dasha-mini .d-row.current{
+  background:rgba(184,134,11,0.22); font-weight:700;
+  padding:1px 3px; margin:0 -1px; border-radius:2px;
   border-bottom:1px solid var(--gold);
 }
-.dasha-col .d-row .name{font-weight:600;}
-.dasha-col .d-row .dates{
-  font-family:'SF Mono',monospace; font-size:7px; color:var(--ink-soft);
+.dasha-mini .d-row .name{font-weight:600;}
+.dasha-mini .d-row .dates{
+  font-family:'SF Mono',monospace; font-size:6.5px; color:var(--ink-soft);
 }
 
 /* Tables */
@@ -760,65 +772,66 @@ function buildPdfPage(state){
       <div class="field"><span>Birth Dasha</span><span class="devanagari">${state.dasha.balanceLord} · ${state.dasha.balance.toFixed(2)}y</span></div>
     </div>
 
-    <!-- 5 Charts side-by-side -->
+    <!-- 6-cell grid (3 rows × 2 cols) — matches Parashara photo arrangement -->
     <div class="pdf-charts">
       <div class="pdf-chart">
         <div class="label"><span class="main">जन्म कुंडली · Janma</span><span class="tag">D-1</span></div>
-        ${lagSvg}
+        <div class="chart-wrap">${lagSvg}</div>
       </div>
       <div class="pdf-chart">
-        <div class="label"><span class="main">भाव श्रीपति · Sripati</span><span class="tag" style="background:#1e3a5f;">BHAV</span></div>
-        ${bhavSripatiSvg}
+        <div class="label"><span class="main">भाव (श्रीपति) · Sripati</span><span class="tag" style="background:#1e3a5f;">BHAV</span></div>
+        <div class="chart-wrap">${bhavSripatiSvg}</div>
       </div>
       <div class="pdf-chart">
-        <div class="label"><span class="main">वर्ग नवांश · Navansh</span><span class="tag" style="background:#b04a2f;">D-9</span></div>
-        ${navSvg}
+        <div class="label"><span class="main">वर्ग नवांश (जीवनसाथी) · Navansh</span><span class="tag" style="background:#b04a2f;">D-9</span></div>
+        <div class="chart-wrap">${navSvg}</div>
       </div>
       <div class="pdf-chart">
-        <div class="label"><span class="main">भाव समविभाजन · Equal</span><span class="tag" style="background:#b8860b;">BHAV</span></div>
-        ${bhavEqualSvg}
+        <div class="label"><span class="main">भाव (समविभाजन) · Equal</span><span class="tag" style="background:#b8860b;">BHAV</span></div>
+        <div class="chart-wrap">${bhavEqualSvg}</div>
       </div>
       <div class="pdf-chart">
-        <div class="label"><span class="main">कृष्णमूर्ति · KP</span><span class="tag" style="background:#4a6741;">KP</span></div>
-        ${kpSvg}
+        <div class="label"><span class="main">कृष्णमूर्ति कुंडली · KP</span><span class="tag" style="background:#4a6741;">KP</span></div>
+        <div class="chart-wrap">${kpSvg}</div>
+      </div>
+      <div class="pdf-chart">
+        <div class="label"><span class="main">विंशोत्तरी · Vimshottari (3-Level)</span><span class="tag" style="background:#7a1f1f;">DASHA</span></div>
+        <div class="dasha-cell-3lvl">
+          <div class="dasha-mini">
+            <h5><span>Mahadasha</span><span class="tag">L-1</span></h5>
+            ${mahaRows}
+          </div>
+          <div class="dasha-mini">
+            <h5><span class="devanagari">${curMaha.lord} · Antar</span><span class="tag lvl2">L-2</span></h5>
+            ${antarRows}
+          </div>
+          <div class="dasha-mini">
+            <h5><span class="devanagari">${curMaha.lord}-${curAntar.lord} · Prat</span><span class="tag lvl3">L-3</span></h5>
+            ${pratRows}
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- 3-Level Vimshottari Dasha (Maha | Antar | Pratyantar) -->
-    <div class="dasha-3lvl">
-      <div class="dasha-col">
-        <h4><span>विंशोत्तरी · Mahadasha</span><span class="tag">LEVEL 1</span></h4>
-        ${mahaRows}
-      </div>
-      <div class="dasha-col">
-        <h4><span><span class="devanagari">${curMaha.lord}</span> · Antardasha</span><span class="tag lvl2">LEVEL 2</span></h4>
-        ${antarRows}
-      </div>
-      <div class="dasha-col">
-        <h4><span><span class="devanagari">${curMaha.lord}-${curAntar.lord}</span> · Pratyantar</span><span class="tag lvl3">LEVEL 3</span></h4>
-        ${pratRows}
-      </div>
-    </div>
-
-    <!-- Planet table + Bhav cusps side-by-side -->
+    <!-- Planet table + Bhav cusps side-by-side (compact bottom strip) -->
     <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:6px;">
       <div>
-        <h3 style="font-family:'Cormorant Garamond',serif;font-size:10px;color:#7a1f1f;border-bottom:1px solid #b8860b;padding-bottom:2px;margin-bottom:3px;">ग्रह स्पष्ट · Planetary Positions (Nirayana / Lahiri)</h3>
-        <table style="font-size:7.5px;">
+        <h3 style="font-family:'Cormorant Garamond',serif;font-size:9.5px;color:#7a1f1f;border-bottom:1px solid #b8860b;padding-bottom:1px;margin-bottom:2px;">ग्रह स्पष्ट · Planetary Positions (Nirayana / Lahiri)</h3>
+        <table style="font-size:7px;">
           <thead><tr><th>Graha</th><th>Rashi</th><th>Degree</th><th>R/M</th><th>Nak-Pada</th><th>Rashi Lord</th><th>Nak. Lord</th></tr></thead>
           <tbody>${pRows}</tbody>
         </table>
       </div>
       <div>
-        <h3 style="font-family:'Cormorant Garamond',serif;font-size:10px;color:#7a1f1f;border-bottom:1px solid #b8860b;padding-bottom:2px;margin-bottom:3px;">भाव स्पष्ट · Bhava Cusps (Sripati)</h3>
-        <table style="font-size:7.5px;">
+        <h3 style="font-family:'Cormorant Garamond',serif;font-size:9.5px;color:#7a1f1f;border-bottom:1px solid #b8860b;padding-bottom:1px;margin-bottom:2px;">भाव स्पष्ट · Bhava Cusps (Sripati)</h3>
+        <table style="font-size:7px;">
           <thead><tr><th>Bhav</th><th>Rashi</th><th>Degree</th><th>Nak-Pada</th><th>Lord</th></tr></thead>
           <tbody>${bRows}</tbody>
         </table>
       </div>
     </div>
 
-    <div style="margin-top:4px;padding-top:3px;border-top:1px solid #d7c89b;font-size:7px;color:#5a4a32;display:flex;justify-content:space-between;">
+    <div style="margin-top:3px;padding-top:2px;border-top:1px solid #d7c89b;font-size:6.5px;color:#5a4a32;display:flex;justify-content:space-between;">
       <span>🕉 Kundli Pro Max · A4 Landscape · 3-Level Vimshottari · ${new Date().toLocaleString()}</span>
       <span>Current: <b class="devanagari">${curMaha.lord}-${curAntar.lord}-${curAntar.prats[cur.pratIdx].lord}</b> (Maha-Antar-Pratyantar)</span>
     </div>
